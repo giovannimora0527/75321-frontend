@@ -1,1 +1,31 @@
-<p>usuario componente nuevo!</p>
+<div class="card">
+  <div class="card-title">Listado de usuarios</div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nombre de usuario</th>
+            <th>Rol</th>
+            <th>Fecha de creacion</th>
+            <th>Activo</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="usuariosList.length > 0">
+          <tr *ngFor="let u of usuariosList">
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.rol }}</td>
+            <td>{{ u.fechaCreacion }}</td>
+            <td>{{ u.activo === true? "Activo": "Inactivo" }}</td>
+          </tr>
+        </tbody>
+        <tbody *ngIf="usuariosList.length === 0">
+          <tr>
+            <td colspan="5" class="text-center">No hay usuarios disponibles.</td>
+          </tr>
+      </table>
+    </div>
+  </div>
+</div>
