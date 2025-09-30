@@ -3,6 +3,8 @@ import { UsuarioService } from './service/usuario.service';
 import { Usuario } from './model/usuario';
 import { CommonModule } from '@angular/common';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-usuario',
   imports: [CommonModule],
@@ -32,4 +34,14 @@ export class UsuarioComponent {
       }
     });
   }
+
+  probarBoton(usuario: Usuario) {  
+    Swal.fire("Titulo", "Este es mi contenido", "success"); 
+    console.log(usuario);
+  }
+
+  guardarUsuario() {
+    Swal.fire("Guardar", "Guardando usuario", "success"); 
+  }
+
 }
