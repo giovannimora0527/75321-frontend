@@ -3,11 +3,14 @@
     <div class="card-header">
       <div class="row align-items-center">
         <div class="col-lg-7">
-          <h3 class="mb-0"><i class="fa fa-users"></i>&nbsp;Lista de usuarios</h3>
+          <h3 class="mb-0">
+            <i class="fa fa-users"></i>
+            &nbsp;Lista de usuarios
+          </h3>
           <small>Estos son los usuarios registrados en el sistema.</small>
         </div>
         <div class="col-lg-5 text-end">
-            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#nuevoUsuarioModal">Nuevo Usuario</button>
+          <button class="btn btn-outline-primary" (click)="abrirNuevoUsuario()">Nuevo Usuario</button>
         </div>
       </div>
     </div>
@@ -25,15 +28,20 @@
             </tr>
           </thead>
           <tbody *ngIf="usuariosList.length > 0">
-            <tr *ngFor="let u of usuariosList">
-              <td>{{ u.id }}</td>
-              <td>{{ u.username }}</td>
-              <td>{{ u.rol }}</td>
-              <td>{{ u.fechaCreacion }}</td>
-              <td>{{ u.activo === true ? 'Activo' : 'Inactivo' }}</td>
-              <td><button class="btn btn-outline-primary" (click)="probarBoton(u)">
-                <i class="fa fa-edit"></i>&nbsp;
-                Editar</button></td>
+            <tr *ngFor="let usuario of usuariosList">
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.rol }}</td>
+              <td>{{ usuario.fechaCreacion }}</td>
+              <td>
+                <i class="fa" [ngClass]="usuario.activo === true ? 'fa-check text-success' : 'fa-times text-danger'" aria-hidden="true"></i>
+              </td>
+              <td>
+                <button class="btn btn-outline-primary" (click)="abrirEditarUsuario(usuario)">
+                  <i class="fa fa-edit"></i>
+                  &nbsp; Editar
+                </button>
+              </td>
             </tr>
           </tbody>
           <tbody *ngIf="usuariosList.length === 0">
@@ -48,19 +56,17 @@
 </div>
 
 <!-- Modal Nuevo Usuario -->
-<div class="modal fade" id="nuevoUsuarioModal" tabindex="-1" aria-labelledby="nuevoUsuarioModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" aria-labelledby="modalCrearUsuarioLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="nuevoUsuarioModalLabel">Nuevo Usuario</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <h5 class="modal-title" id="modalCrearUsuarioLabel"> {{ titleModal }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar"></button>
       </div>
-      <div class="modal-body">
-     
-      </div>
+      <div class="modal-body"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarUsuario()">Guardar</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="guardarUsuario()">{{titleBoton}}</button>
       </div>
     </div>
   </div>
@@ -68,7 +74,7 @@
 
 <script>
   // Abrir modal al hacer clic en "Nuevo Usuario"
-  document.querySelector('.btn-outline-primary').addEventListener('click', function() {
+  document.querySelector('.btn-outline-primary').addEventListener('click', function () {
     var modal = new bootstrap.Modal(document.getElementById('nuevoUsuarioModal'));
     modal.show();
   });

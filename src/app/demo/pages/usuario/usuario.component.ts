@@ -4,6 +4,8 @@ import { Usuario } from './model/usuario';
 import { CommonModule } from '@angular/common';
 
 import Swal from 'sweetalert2';
+// Importa los objetos necesarios de Bootstrap
+import Modal from 'bootstrap/js/dist/modal';
 
 @Component({
   selector: 'app-usuario',
@@ -12,22 +14,21 @@ import Swal from 'sweetalert2';
   styleUrl: './usuario.component.scss'
 })
 export class UsuarioComponent {
+  modalInstance: Modal | null = null;
+  modoFormulario: string = '';
+  titleModal: string = '';
+  titleBoton: string = '';
   usuariosList: Usuario[] = [];
+  usuarioSelected: Usuario;
 
   constructor(private readonly usuarioService: UsuarioService) {
     this.listarUsuarios();
   }
 
-  otroMetodo() {
-    console.log('Usuarios cargados: ', this.usuariosList);
-  }
-
   listarUsuarios() {
-    console.log('Entro a cargar usuarios');
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
         this.usuariosList = data;
-        this.otroMetodo();
       },
       error: (error) => {
         console.error('Error al cargar usuarios: ', error);
@@ -35,13 +36,38 @@ export class UsuarioComponent {
     });
   }
 
-  probarBoton(usuario: Usuario) {  
-    Swal.fire("Titulo", "Este es mi contenido", "success"); 
-    console.log(usuario);
+  closeModal() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
+  }
+
+  openModal(modo: string) {
+    this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
+    this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
+    this.modoFormulario = modo;
+    const modalElement = document.getElementById('modalCrearUsuario');
+    if (modalElement) {
+      // Verificar si ya existe una instancia del modal
+      this.modalInstance ??= new Modal(modalElement);
+      this.modalInstance.show();
+    }
+  }
+
+  abrirNuevoUsuario() {
+    this.usuarioSelected = new Usuario();    
+    // Cargamos los datos del usuario seleccionado en el formulario
+
+    // Dejamos el formulario en blanco
+    this.openModal('C');
+  }
+
+  abrirEditarUsuario(usuario: Usuario) {
+    this.usuarioSelected = usuario;
+    this.openModal('E');
   }
 
   guardarUsuario() {
-    Swal.fire("Guardar", "Guardando usuario", "success"); 
+    Swal.fire('Guardar', 'Guardando usuario', 'success');
   }
-
 }
