@@ -32,12 +32,12 @@ export class UsuarioComponent {
   //Tiene que existir el metodo en el servicio para luego implentar logica de Negocio
   listarUsuarios() {
     console.log('Entro a cargar usuarios');
-    this.usuarioService.buscarporDocumento('9902001008').subscribe({
-      next: Usuario => {
-        this.usuariosList = [Usuario];
+    this.usuarioService.listarTodos().subscribe({
+      next: (usuarios: Usuario[]) => {
+        this.usuariosList = usuarios;
         this.otroMetodo();
       },
-      error: err => console.error('Error al cargar usuarios', err)
+      error: (err) => console.error('Error al cargar usuarios', err),
     });
   }
   //Este metodo es para abrir el modal

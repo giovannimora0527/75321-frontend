@@ -16,6 +16,10 @@ export class UsuarioService {
 
   //Definimos el metodo para luego inyectarlo al componente
   //observable es una promesa mejorada
+  //El ultimo punto ponemos el nombre de la firma del Service del Backend
+listarTodos():Observable<Usuario[]>{
+  return this.backend.get(this.apiUrl,this.endpoint,'all')
+}
 
   buscarporDocumento(numDoc:string):Observable<Usuario>{
     //Construimos la url
