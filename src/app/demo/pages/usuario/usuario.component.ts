@@ -33,11 +33,11 @@ export class UsuarioComponent {
   listarUsuarios() {
     console.log('Entro a cargar usuarios');
     this.usuarioService.buscarporDocumento('9902001008').subscribe({
-      next:Usuario=>{
-        this.usuariosList=[Usuario];
-        this.otroMetodo
+      next: Usuario => {
+        this.usuariosList = [Usuario];
+        this.otroMetodo();
       },
-      error: err=>console.error('Error al cargar usuarios',err)
+      error: err => console.error('Error al cargar usuarios', err)
     });
   }
   //Este metodo es para abrir el modal
@@ -48,50 +48,48 @@ export class UsuarioComponent {
   }
 
   //Preparar los datos para el modal
-  openModal(modo:string){
-    this.titleModal=modo==='c'?'Crear Usuario':'Editar Usuario';
-    this.titleBoton=modo==='C'? 'Guardar Usuario':'Actualizar Usuario';
-    this.modoFormulario=modo;
-    const modalElemnt=document.getElementById('modalUsuario');
-    if(modalElemnt){
+  openModal(modo: string) {
+    this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
+    this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
+    this.modoFormulario = modo;
+    const modalElement = document.getElementById('modalUsuario');
+    if (modalElement) {
       //Verifica si ya existe una instancia del modal
-      this.modalInstance ??=new Modal(modalElemnt);
+      this.modalInstance ??= new Modal(modalElement);
       this.modalInstance.show();
     }
   }
 
-  abrirNuevoUsuario(){
-    this.usuarioSelected=new Usuario();
-    //Cargamos los datos del usurio
+  abrirNuevoUsuario() {
+    this.usuarioSelected = new Usuario();
+    //Cargamos los datos del usuario
 
     //dejar el formulario en blanco
     this.openModal('C');
   }
 
-  abrirEditarUsuario(usuario:Usuario){
-    this.usuarioSelected=usuario;
+  abrirEditarUsuario(usuario: Usuario) {
+    this.usuarioSelected = usuario;
     this.openModal('E');
   }
 
-  guadarUsuario(){
-    Swal.fire('Guardar Usuario','Usuario guardado con exito','success');
-  
-}
-//Cerra el modal
-closeModal(){
-  if(this.modalInstance){
-    this.modalInstance.hide();
+  //Cerrar el modal
+  closeModal() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
   }
-}
 
- guardarUsuario() {
-    if (this.modoFormulario === 'c') {
+  guardarUsuario() {
+    if (this.modoFormulario === 'C') {
       console.log('Creando usuario:', this.usuarioSelected);
       // Aquí iría tu lógica para crear usuario (por ejemplo una petición HTTP)
       this.usuariosList.push(this.usuarioSelected);
+      Swal.fire('Guardar Usuario', 'Usuario guardado con éxito', 'success');
     } else {
       console.log('Actualizando usuario:', this.usuarioSelected);
       // Aquí lógica para actualizar
+      Swal.fire('Actualizar Usuario', 'Usuario actualizado con éxito', 'success');
     }
 
     // Luego de guardar, cierra el modal
