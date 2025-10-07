@@ -38,15 +38,13 @@
               </td>
               <td>
                 <button class="btn btn-outline-primary" (click)="abrirEditarUsuario(usuario)">
-                  <i class="fa fa-edit"></i>
-                  &nbsp; Editar
-                </button>
+                  <i class="fa fa-edit"></i>Editar</button>
               </td>
             </tr>
           </tbody>
           <tbody *ngIf="usuariosList.length === 0">
             <tr>
-              <td colspan="5" class="text-center">No hay usuarios disponibles.</td>
+              <td colspan="6" class="text-center">No hay usuarios disponibles.</td>
             </tr>
           </tbody>
         </table>
