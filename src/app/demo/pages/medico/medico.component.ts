@@ -19,7 +19,7 @@ export class MedicoComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Initialize Bootstrap tooltips
+    // Inicializa el tooltip de Bootstrap
     this.initializeTooltips();
   }
 
