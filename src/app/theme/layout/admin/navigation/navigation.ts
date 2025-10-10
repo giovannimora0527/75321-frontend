@@ -31,21 +31,65 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'medico',
-        title: 'Gestión de medicos',
+        title: 'Gestión de médicos',
         type: 'item',
         url: '/inicio/medico',
-        icon: 'feather icon-user',
+        icon: 'feather icon-user-plus',
         classes: 'nav-item'
       },
       //Menus
       {
         id: 'paciente',
-        title: 'Gestión de paciente',
+        title: 'Gestión de pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-user',
+        icon: 'feather icon-users',
         classes: 'nav-item'
-      }
+      },
+      {
+        id:'medicamentos',
+        title: 'Gestión de medicamentos',
+        type: 'item',
+        url: '/inicio/medicamentos',
+        icon: 'feather icon-package',
+        classes: 'nav-item'
+      },
+      {
+        id:'citas',
+        title: 'Gestión de citas',
+        type: 'item',
+        url: '/inicio/citas',
+        icon: 'feather icon-calendar',
+        classes: 'nav-item'
+      },
+      {
+        id:'formulas-medicas',
+        title: 'Gestión de fórmulas médicas',
+        type: 'item',
+        url: '/inicio/formulas-medicas',
+        icon: 'feather icon-clipboard',
+        classes: 'nav-item'
+      },
+      {
+        id:'historias-medicas',
+        title: 'Gestión de historias médicas',
+        type: 'item',
+        url: '/inicio/historias-medicas',
+        icon: 'feather icon-file-text',
+        classes: 'nav-item'
+      },
+
+       {
+         id:'especializaciones',
+         title: 'Gestión de especializaciones',
+         type: 'item',
+         url: '/inicio/especializaciones',
+         icon: 'feather icon-award',
+         classes: 'nav-item'
+       }
+
+
+
     ]
   },
   /* ---------- Nuevos menus aqui -------------  */
