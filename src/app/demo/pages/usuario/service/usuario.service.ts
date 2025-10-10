@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
+import { RespuestaRs } from '../model/respuesta-rs';
 import { Usuario } from '../model/usuario';
 
 @Injectable({
@@ -25,4 +26,9 @@ listarTodos():Observable<Usuario[]>{
     //Construimos la url
     return this.backend.get(this.apiUrl,this.endpoint,`buscar-por-documento/${numDoc}`)
   }
+  //Enpoint Angular
+  guardarUsuario(usuario:Usuario):Observable<RespuestaRs>{
+    return this.backend.post(this.apiUrl,this.endpoint,'guardar',usuario)
+  }
+  //Implentar Actualizar ya teniendo en Spring Boot
 }

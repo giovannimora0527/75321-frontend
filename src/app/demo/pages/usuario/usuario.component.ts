@@ -5,9 +5,25 @@ import Swal from 'sweetalert2';
 import { Usuario } from './model/usuario';
 import { UsuarioService } from './service/usuario.service';
 
+//Importamos lo neceario para los formularios
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+
+// Importa los objetos necesarios de Bootstrap
+import { delay, map, Observable, of } from 'rxjs';
+
+//Importamos lo que vamos usar
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -20,10 +36,53 @@ export class UsuarioComponent {
   usuariosList: Usuario[] = [];
   usuarioSelected:Usuario;
 
+  //Formulario Reactivo es mas escalable angular escucha los cambios
 
-  constructor(private readonly usuarioService: UsuarioService) {
+  //Contenedor de los campos del formulario
+  form:FormGroup=new FormGroup({
+
+    //lo que se va inyectar en el formulario
+    //Crear un campo Vacio
+    username:new FormControl(''),
+    password:new FormControl(''),
+    rol:new FormControl(''),
+    activo:new FormControl(''),
+
+  })
+  //Inyetcamos als dependencias y prepara el estado inicial lo primero que se ejecuta
+  constructor(
+    private readonly usuarioService: UsuarioService,
+    private readonly formBuilder: FormBuilder
+  ){
+    //Se ejectuan los metodos
     this.listarUsuarios();
+    this.inicializarFormulario();
   }
+
+  //Valida los cambios de Manera asincrona
+  inicializarFormulario(){
+    this.form=this.formBuilder.group({
+      username:['',[Validators.required,Validators.minLength(4),Validators.maxLength(12)]],
+      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
+      rol:['',[Validators.required]],
+      activo:['',[Validators.required]],
+  });
+}
+//foma de acceder a los controles en el Html
+get f():{[key:string]:AbstractControl}{
+  return this.form.controls;
+}
+
+//Validamos de manera asicronica la contraseña
+passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
+  const contrasenasProhibidas = ['12345678', 'password', 'admin'];
+
+  return of(contrasenasProhibidas.includes(control.value)).pipe(
+    delay(800), // simulamos llamada a servidor
+    map((invalida) => (invalida ? { passwordProhibida: true } : null))
+  );
+}
+
 
   otroMetodo() {
     console.log('Usuarios cargados: ', this.usuariosList);
@@ -60,15 +119,27 @@ export class UsuarioComponent {
     }
   }
 
+  //metodo para abrir el modal
   abrirNuevoUsuario() {
     this.usuarioSelected = new Usuario();
     //Cargamos los datos del usuario
+    //Dejar el formulario en blanco
+    this.limpiarFormulario();
 
     //dejar el formulario en blanco
     this.openModal('C');
   }
 
+  //Metodo para limpiar el formulario
+  limpiarFormulario(){
+    this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+  }
+
   abrirEditarUsuario(usuario: Usuario) {
+    //limpiamos el formulario de primeras
+    this.limpiarFormulario();
     this.usuarioSelected = usuario;
     this.openModal('E');
   }
@@ -80,20 +151,34 @@ export class UsuarioComponent {
     }
   }
 
+  //Logica de guardar los Usuarios llamando al service a la api del backend
   guardarUsuario() {
-    if (this.modoFormulario === 'C') {
-      console.log('Creando usuario:', this.usuarioSelected);
-      // Aquí iría tu lógica para crear usuario (por ejemplo una petición HTTP)
-      this.usuariosList.push(this.usuarioSelected);
-      Swal.fire('Guardar Usuario', 'Usuario guardado con éxito', 'success');
-    } else {
-      console.log('Actualizando usuario:', this.usuarioSelected);
-      // Aquí lógica para actualizar
-      Swal.fire('Actualizar Usuario', 'Usuario actualizado con éxito', 'success');
+    if (this.form.invalid) {
+      Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
+      return;
     }
-
-    // Luego de guardar, cierra el modal
-    this.closeModal();
+    
+    // Solo lógica para crear usuarios
+    this.form.get('activo').setValue(true);
+    this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
+      next: (data) => {
+        console.log(data);
+        // Cerrar el modal primero
+        this.closeModal();
+        // Luego mostrar la alerta
+        Swal.fire('Éxito', data.mensaje, 'success');
+        // Actualizar la lista de usuarios
+        this.listarUsuarios();
+      },
+      error: (error) => {
+        console.error('Error al guardar usuario: ', error);
+        // Cerrar el modal primero
+        this.closeModal();
+        // Luego mostrar la alerta de error
+        Swal.fire('Error', error.error.message, 'error');
+      }
+      //Falta actualizar Usuarios tanto Logica Backend Y frontend
+    });
   }
 
 }
