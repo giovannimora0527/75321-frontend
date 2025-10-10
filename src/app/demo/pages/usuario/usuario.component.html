@@ -105,6 +105,21 @@
               </div>               
             </div>
 
+            <!--  Fecha de creación -->
+            <div class="mb-3">
+              <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+              <input
+                type="date"
+                formControlName="fechaCreacion"
+                class="form-control"
+                id="fechaCreacion"
+                [ngModel]="usuarioSelected ? usuarioSelected.fechaCreacion : ''"
+              />
+              <div *ngIf="form.get('fechaCreacion')?.hasError('required') && form.get('fechaCreacion')?.touched" class="text-danger">
+                La fecha de creación es requerida.
+              </div>               
+            </div>
+
             <!--  Rol de usuario -->
             <div class="mb-3">
               <label for="rol" class="form-label">Rol</label>

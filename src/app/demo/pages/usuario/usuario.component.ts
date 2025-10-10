@@ -25,7 +25,7 @@ import { delay, map, Observable, of } from 'rxjs';
   selector: 'app-usuario',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './usuario.component.html',
-  styleUrl: './usuario.component.scss'
+  styleUrls: ['./usuario.component.scss']
 })
 export class UsuarioComponent {
   //variables para manipular en el modal
@@ -46,6 +46,7 @@ export class UsuarioComponent {
     username:new FormControl(''),
     password:new FormControl(''),
     rol:new FormControl(''),
+    fechaCreacion:new FormControl(''),
     activo:new FormControl(''),
 
   })
@@ -65,6 +66,7 @@ export class UsuarioComponent {
       username:['',[Validators.required,Validators.minLength(4),Validators.maxLength(12)]],
       password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
       rol:['',[Validators.required]],
+      fechaCreacion:['',[Validators.required]],
       activo:['',[Validators.required]],
   });
 }
@@ -125,6 +127,9 @@ passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | 
     //Cargamos los datos del usuario
     //Dejar el formulario en blanco
     this.limpiarFormulario();
+    
+    //Establecer fecha actual para nuevo usuario
+    this.establecerFechaActual();
 
     //dejar el formulario en blanco
     this.openModal('C');
@@ -135,6 +140,13 @@ passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | 
     this.form.reset();
     this.form.markAsPristine();
     this.form.markAsUntouched();
+  }
+
+  //Metodo para establecer fecha actual al crear nuevo usuario
+  establecerFechaActual(){
+    const fechaActual = new Date();
+    const fechaFormateada = fechaActual.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    this.form.get('fechaCreacion').setValue(fechaFormateada);
   }
 
   abrirEditarUsuario(usuario: Usuario) {
@@ -151,31 +163,57 @@ passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | 
     }
   }
 
+  // Espera a que el modal termine de ocultarse (transición completa)
+  private waitForModalHidden(modalElement: HTMLElement): Promise<void> {
+    return new Promise((resolve) => {
+      // Garantiza que resolvemos incluso si no se dispara el evento por alguna razón
+      const fallbackTimeout = setTimeout(resolve, 600);
+
+      const handler = () => {
+        clearTimeout(fallbackTimeout);
+        modalElement.removeEventListener('hidden.bs.modal', handler as any);
+        resolve();
+      };
+      // Bootstrap emite 'hidden.bs.modal' cuando termina la animación de cierre
+      modalElement.addEventListener('hidden.bs.modal', handler as any, { once: true });
+    });
+  }
+
   //Logica de guardar los Usuarios llamando al service a la api del backend
   guardarUsuario() {
     if (this.form.invalid) {
       Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
       return;
     }
-    
-    // Solo lógica para crear usuarios
-    this.form.get('activo').setValue(true);
+
     this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
       next: (data) => {
         console.log(data);
-        // Cerrar el modal primero
+        // Cerrar el modal primero y esperar a que termine la animación para evitar que la alerta quede debajo
+        const modalElement = document.getElementById('modalUsuario');
         this.closeModal();
-        // Luego mostrar la alerta
-        Swal.fire('Éxito', data.mensaje, 'success');
-        // Actualizar la lista de usuarios
-        this.listarUsuarios();
+        if (modalElement) {
+          this.waitForModalHidden(modalElement).then(() => {
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.listarUsuarios();
+          });
+        } else {
+          Swal.fire('Éxito', data.mensaje, 'success');
+          this.listarUsuarios();
+        }
       },
       error: (error) => {
         console.error('Error al guardar usuario: ', error);
-        // Cerrar el modal primero
+        // Cerrar el modal primero y esperar para mostrar la alerta por encima del backdrop
+        const modalElement = document.getElementById('modalUsuario');
         this.closeModal();
-        // Luego mostrar la alerta de error
-        Swal.fire('Error', error.error.message, 'error');
+        if (modalElement) {
+          this.waitForModalHidden(modalElement).then(() => {
+            Swal.fire('Error', error?.error?.message ?? 'Ocurrió un error al guardar', 'error');
+          });
+        } else {
+          Swal.fire('Error', error?.error?.message ?? 'Ocurrió un error al guardar', 'error');
+        }
       }
       //Falta actualizar Usuarios tanto Logica Backend Y frontend
     });
