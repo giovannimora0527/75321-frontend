@@ -81,7 +81,7 @@ export class BackendService {
     endpoint: string,      // Endpoint específico
     service: string,       // Servicio o recurso
     routerParams?: HttpParams // Parámetros opcionales de la ruta
-  ) {
+  ): Observable<T> {
     const tokenRecuperado = localStorage.getItem('token') || ''; // Evita `null`
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
