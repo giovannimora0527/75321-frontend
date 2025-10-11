@@ -1,1 +1,132 @@
-
+<div class="container-fluid py-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white border-0">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h4 class="mb-1 fw-bold">
+            <i class="fa fa-users me-2"></i>
+            Gestión de Pacientes
+          </h4>
+          <p class="mb-0 opacity-75">
+            <i class="fa fa-info-circle me-1"></i>
+            Administra los pacientes registrados en el sistema médico
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+          <button class="btn btn-light btn-lg shadow-sm fw-semibold" (click)="abrirNuevoPaciente()">
+            <i class="fa fa-plus-circle me-2"></i>
+            Nuevo Paciente
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th class="border-0 fw-semibold text-center" style="width: 8%;">
+                <i class="fa fa-hashtag me-1"></i>ID
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-user me-1"></i>Paciente
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-id-card me-1"></i>Tipo Doc.
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-calendar me-1"></i>Fecha Nacimiento
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-phone me-1"></i>Teléfono
+              </th>
+              <th class="border-0 fw-semibold text-center" style="width: 12%;">
+                <i class="fa fa-cogs me-1"></i>Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="pacientesList.length > 0">
+            <tr *ngFor="let paciente of pacientesList" class="align-middle">
+              <td class="text-center">
+                <span class="badge bg-secondary rounded-pill px-3 py-2 fw-semibold">
+                  {{ paciente.id }}
+                </span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-user text-white"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-semibold">{{ paciente.nombres }} {{ paciente.apellidos }}</h6>
+                    <small class="text-muted">Paciente</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-info text-dark px-3 py-2">
+                  {{ paciente.tipoDocumento }}
+                </span>
+              </td>
+              <td>
+                <span class="text-muted">
+                  <i class="fa fa-calendar-alt me-1"></i>
+                  {{ paciente.fechaNacimiento }}
+                </span>
+              </td>
+              <td>
+                <span class="text-muted">
+                  <i class="fa fa-phone me-1"></i>
+                  {{ paciente.telefono }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-outline-primary btn-sm shadow-sm" 
+                        (click)="abrirEditarPaciente(paciente)"
+                        title="Editar paciente">
+                  <i class="fa fa-edit me-1"></i>
+                  Editar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="pacientesList.length === 0">
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <div class="d-flex flex-column align-items-center empty-state">
+                  <div class="mb-3">
+                    <i class="fa fa-users fa-3x text-muted opacity-50"></i>
+                  </div>
+                  <h5 class="text-muted mb-2">No hay pacientes registrados</h5>
+                  <p class="text-muted mb-3">Comienza agregando el primer paciente al sistema</p>
+                  <button class="btn btn-primary btn-sm" (click)="abrirNuevoPaciente()">
+                    <i class="fa fa-plus me-1"></i>
+                    Agregar Paciente
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Footer con estadísticas -->
+    <div class="card-footer bg-light border-0 py-3" *ngIf="pacientesList.length > 0">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <span class="text-muted">
+            <i class="fa fa-chart-bar me-1"></i>
+            Total de pacientes: <strong>{{ pacientesList.length }}</strong>
+          </span>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <small class="text-muted">
+            <i class="fa fa-clock me-1"></i>
+            Última actualización: {{ fechaActual | date:'short' }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

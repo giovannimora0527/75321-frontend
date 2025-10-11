@@ -7,14 +7,14 @@ import { UsuarioService } from './service/usuario.service';
 
 //Importamos lo neceario para los formularios
 import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators
+    AbstractControl,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    ValidationErrors,
+    Validators
 } from '@angular/forms';
 
 // Importa los objetos necesarios de Bootstrap
@@ -35,6 +35,7 @@ export class UsuarioComponent {
   titleBoton='';
   usuariosList: Usuario[] = [];
   usuarioSelected:Usuario;
+  fechaActual = new Date();
 
   //Formulario Reactivo es mas escalable angular escucha los cambios
 

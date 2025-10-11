@@ -13,6 +13,7 @@ import { MedicoService } from './service/medico.service';
 export class MedicoComponent {
   //Listar Medicos
   medicoList: medico[] = [];
+  fechaActual = new Date();
   
   //variables para manipular en el modal
   modalInstance: Modal | null = null;
@@ -49,6 +50,11 @@ export class MedicoComponent {
       this.modalInstance ??= new Modal(modalElement);
       this.modalInstance.show();
     }
+  }
+
+  abrirNuevoMedico() {
+    this.medicoSelected = new medico();
+    this.openModal('C');
   }
 
   abrirEditarMedico(medico: medico) {
