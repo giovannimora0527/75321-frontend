@@ -3,9 +3,9 @@
     <div class="card-header">
       <h3 class="mb-0">
         <i class="fa fa-user-md"></i>
-        &nbsp;Lista de pacientes
+        &nbsp;Lista de medicos
       </h3>
-      <small>Estos son los pacientes registrados en el sistema.</small>
+      <small>Estos son los medicos registrados en el sistema.</small>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -13,38 +13,33 @@
           <thead>
             <tr>
               <th>Id</th>
-              <th>Id del usuario</th>
-              <th>Tipo de Documento</th>
-              <th>numero de Documento</th>
               <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Fecha de Nacimiento</th>
-              <th>Genero</th>
-              <th>Telefono</th>
-              <th>Dirección</th>
+              <th>Descripcion</th>
+              <th>presentacion</th>
+              <th>Fecha de Compra</th>
+              <th>Fecha de Vencimiento</th>
+              <th>Fecha de Creacion</th>
+              <th>Fecha de Modificacion</th>
               
             </tr>
           </thead>
-          <tbody *ngIf="pacienteList.length > 0">
-            <tr *ngFor="let m of pacienteList">
+          <tbody *ngIf="medicamentoList.length > 0">
+            <tr *ngFor="let m of medicamentoList">
               <td>{{ m.id }}</td>
-              <td>{{ m.usuario }}</td>
-              <td>{{ m.TipDoc }}</td>
-              <td>{{ m.numDoc }}</td>
-              <td>{{ m.Nom }}</td> 
-              <td>{{ m.Ape }}</td>
-              <td>{{ m.fechaNacimiento }}</td>
-              <td>{{ m.Gen }}</td>
-              <td>{{ m.Tel }}</td>
-              <td>{{ m.Dir }}</td>
-              
+              <td>{{ m.nombre }}</td>
+              <td>{{ m.descripcion }}</td>
+              <td>{{ m.presentacion }}</td>
+              <td>{{ m.fechaCompra }}</td>
+              <td>{{ m.fechaVence }}</td>
+              <td>{{ m.fechaCreacionRegistro }}</td>
+              <td>{{ m.fechaModificacionRegistro }}</td>
                <td>
                 <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar médico">
                   <i class="fa fa-edit"></i></button>
               </td>
             </tr>
           </tbody>
-          <tbody *ngIf="pacienteList.length === 0">
+          <tbody *ngIf="medicamentoList.length === 0">
             <tr>
               <td colspan="8" class="text-center">No hay medicos disponibles.</td>
             </tr>

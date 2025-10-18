@@ -1,21 +1,21 @@
 import { Component, AfterViewInit } from '@angular/core';
-import { PacienteService } from './service/paciente.service';
-import { Paciente } from './models/paciente';
+import { RecetaService } from './service/Formula.service';
+import { Formula } from './models/formula';
 import { CommonModule } from '@angular/common';
 // Import Bootstrap JS for tooltips
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 @Component({
-  selector: 'app-paciente',
+  selector: 'app-formula',
   imports: [CommonModule],
-  templateUrl: './paciente.component.html',
-  styleUrl: './paciente.component.scss'
+  templateUrl: './formula.component.html',
+  styleUrl: './formula.component.scss'
 })
-export class PacienteComponent implements AfterViewInit {
-  pacienteList: Paciente[] = [];
+export class FormulaComponent implements AfterViewInit {
+  formulaList: Formula[] = [];
 
-  constructor(private readonly pacienteService: PacienteService) {
-    this.listarPacientes();
+  constructor(private readonly recetaService: RecetaService) {
+    this.listarTodasLasRecetas();
   }
 
   ngAfterViewInit() {
@@ -23,19 +23,20 @@ export class PacienteComponent implements AfterViewInit {
     this.initializeTooltips();
   }
 
-  listarPacientes() {
-    this.pacienteService.listarPacientes().subscribe({
+  listarTodasLasRecetas() {
+    this.recetaService.listarTodasLasRecetas().subscribe({
       next: (data) => {
         console.log(data);
-        this.pacienteList = data;
+        this.formulaList = data;
         // Re-initialize tooltips after data is loaded
         setTimeout(() => this.initializeTooltips(), 0);
       },
       error: (error) => {
-        console.error('Error fetching medicos:', error);
+        console.error('Error fetching formula:', error);
       }
     });
   }
+
   /**
    * Initialize Bootstrap tooltips
    */
@@ -54,4 +55,3 @@ export class PacienteComponent implements AfterViewInit {
     }
   }
 }
-

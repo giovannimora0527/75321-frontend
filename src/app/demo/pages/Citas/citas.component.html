@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="mb-0">
+        <i class="fa fa-user-md"></i>
+        &nbsp;Lista de medicos
+      </h3>
+      <small>Estos son los medicos registrados en el sistema.</small>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Id del paciente</th>
+              <th>Id del medico</th>
+              <th>Fecha de la cita</th>
+              <th>Estado</th>
+              <th>Motivo / Observaciones</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="citaList.length > 0">
+            <tr *ngFor="let m of citaList">
+              <td>{{ m.id }}</td>
+              <td>{{ m.pacienteId }}</td>
+              <td>{{ m.medicoId }}</td>
+              <td>{{ m.fechaHora }}</td>
+              <td>{{ m.estado }}</td>
+              <td>{{ m.motivo }}</td>
+               <td>
+                <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar médico">
+                  <i class="fa fa-edit"></i></button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="citaList.length === 0">
+            <tr>
+              <td colspan="8" class="text-center">No hay citas disponibles.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
