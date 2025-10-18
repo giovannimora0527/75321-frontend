@@ -27,6 +27,15 @@ export class PacienteComponent {
   titleModal:string='';
   titleBoton='';
   pacientesList: Paciente[] = [];
+  //agregamos los filtros de la tabla
+  pacientesFiltrados: Paciente[] = [];
+   filtros = {
+    id: '',
+    paciente: '',
+    tipoDocumento: '',
+    fechaNacimiento: '',
+    telefono: ''
+  };
   pacienteSelected:Paciente;
   fechaActual = new Date();
 
@@ -110,10 +119,45 @@ export class PacienteComponent {
       next:(Paciente:Paciente[])=>{
         this.pacientesList=Paciente;
         //Otro metodo si es necesario
+        //luego de listar podemos filtrarlos
+        this.pacientesFiltrados = [...this.pacientesList];
       },
       error:(err)=>console.error('Error al cargar pacientes',err),
     });
   }
+  //Logica del Filtrado de pacientes en la tabla
+  aplicarFiltros() {
+    const safe = (v: any) => (v === null || v === undefined ? '' : String(v));
+    const f = {
+      id: this.filtros.id.trim(),
+      paciente: this.filtros.paciente.trim().toLowerCase(),
+      tipoDocumento: this.filtros.tipoDocumento.trim().toLowerCase(),
+      fechaNacimiento: this.filtros.fechaNacimiento.trim().toLowerCase(),
+      telefono: this.filtros.telefono.trim().toLowerCase(),
+    };
+
+    this.pacientesFiltrados = this.pacientesList.filter(p => {
+      const id = safe(p.id);
+      const nombreCompleto = `${safe(p.nombres)} ${safe(p.apellidos)}`.toLowerCase();
+      const tipoDoc = safe(p.tipoDocumento).toLowerCase();
+      const fechaNac = safe(p.fechaNacimiento).toLowerCase();
+      const telefono = safe(p.telefono).toLowerCase();
+
+      return (
+        (!f.id || id.includes(f.id)) &&
+        (!f.paciente || nombreCompleto.includes(f.paciente)) &&
+        (!f.tipoDocumento || tipoDoc.includes(f.tipoDocumento)) &&
+        (!f.fechaNacimiento || fechaNac.includes(f.fechaNacimiento)) &&
+        (!f.telefono || telefono.includes(f.telefono))
+      );
+    });
+  }
+  //Metodo para Limpiar Filtros
+    limpiarFiltros() {
+    this.filtros = { id: '', paciente: '', tipoDocumento: '', fechaNacimiento: '', telefono: '' };
+    this.pacientesFiltrados = [...this.pacientesList];
+  }
+
 
   //Abrir modal
   claseModal(){
