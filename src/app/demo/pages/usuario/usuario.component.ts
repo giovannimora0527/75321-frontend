@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UsuarioService } from './service/usuario.service';
 import { Usuario } from './model/usuario';
 import { CommonModule } from '@angular/common';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 import {
   FormBuilder,
@@ -21,7 +22,7 @@ import { delay, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.scss'
 })
@@ -32,6 +33,7 @@ export class UsuarioComponent {
   titleBoton: string = '';
   usuariosList: Usuario[] = [];
   usuarioSelected: Usuario;
+  titleSpinner: string = 'Cargando ...';
 
   /**
    * Formulario para crear/editar usuario.
@@ -45,7 +47,8 @@ export class UsuarioComponent {
 
   constructor(
     private readonly usuarioService: UsuarioService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.listarUsuarios();
     this.inicializarFormulario();
@@ -88,11 +91,14 @@ export class UsuarioComponent {
    * Funcion para cargar la lista de usuarios.
    */
   listarUsuarios() {
+    this.spinner.show();
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
+        this.spinner.hide();
         this.usuariosList = data;
       },
       error: (error) => {
+        this.spinner.hide();
         console.error('Error al cargar usuarios: ', error);
       }
     });
@@ -102,6 +108,8 @@ export class UsuarioComponent {
    * Funcion para cerrar el modal.
    */
   closeModal() {
+    this.limpiarFormulario();
+    this.usuarioSelected = new Usuario();
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
@@ -111,7 +119,7 @@ export class UsuarioComponent {
    * Abre el modal para crear o editar un usuario.
    * @param modo 'C' para crear, 'E' para editar
    */
-  openModal(modo: string) {
+  openModal(modo: string) {    
     this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
     this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
     this.modoFormulario = modo;
@@ -147,7 +155,6 @@ export class UsuarioComponent {
    * @param usuario Usuario a editar.
    */
   abrirEditarUsuario(usuario: Usuario) {
-    this.limpiarFormulario();
     this.usuarioSelected = usuario;
     this.openModal('E');
   }
@@ -156,7 +163,9 @@ export class UsuarioComponent {
    * Funcion para guardar los datos en crear/actualizar usuario.
    */
   guardarUsuario() {
+    this.spinner.show();
     if (this.form.invalid) {
+      this.spinner.hide();
       Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
       return;
     }
@@ -164,25 +173,30 @@ export class UsuarioComponent {
       this.form.get('activo').setValue(true);
       this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
         next: (data) => {
-          console.log(data);
+          this.spinner.hide();
           Swal.fire('Éxito', data.mensaje, 'success');
           this.closeModal();
           this.listarUsuarios();
         },
         error: (error) => {
+          this.spinner.hide();
           console.error('Error al guardar usuario: ', error);
           Swal.fire('Error', error.error.message, 'error');
         }
       });
     } else {
-      this.usuarioService.actualizarUsuario(this.form.getRawValue()).subscribe({
+      const userActualizar = { ...this.usuarioSelected, ...this.form.value };
+
+      this.usuarioService.actualizarUsuario(userActualizar).subscribe({
         next: (data) => {
+          this.spinner.hide();
           console.log(data);
           Swal.fire('Éxito', data.mensaje, 'success');
           this.closeModal();
           this.listarUsuarios();
         },
         error: (error) => {
+          this.spinner.hide();
           console.error('Error al actualizar usuario: ', error);
           Swal.fire('Error', error.error.message, 'error');
         }
