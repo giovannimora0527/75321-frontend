@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 import { Modal } from 'bootstrap';
 
 import {
-    AbstractControl,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms';
 
 import { Paciente } from './model/paciente';
