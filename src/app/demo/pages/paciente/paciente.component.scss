@@ -87,6 +87,51 @@
   }
 }
 
+// Estilos para los filtros
+.table-light th {
+  background-color: #f8f9fa !important;
+  border-color: #e9ecef !important;
+  padding: 0.75rem 0.5rem;
+}
+
+.table-light th input {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.table-light th input:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  background-color: #ffffff;
+}
+
+.table-light th input::placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.table-light th .btn {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.table-light th .btn:hover {
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+  color: #495057;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 // Mejoras para el footer
 .card-footer {
   border-top: 1px solid #e9ecef;

@@ -3,13 +3,13 @@ import { Component } from '@angular/core';
 import { Modal } from 'bootstrap';
 
 import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators
+    AbstractControl,
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators
 } from '@angular/forms';
 
 import { Paciente } from './model/paciente';
@@ -136,6 +136,14 @@ export class PacienteComponent {
       telefono: this.filtros.telefono.trim().toLowerCase(),
     };
 
+    // Si no hay filtros activos, mostrar todos los pacientes
+    const hayFiltrosActivos = Object.values(f).some(valor => valor.length > 0);
+    
+    if (!hayFiltrosActivos) {
+      this.pacientesFiltrados = [...this.pacientesList];
+      return;
+    }
+
     this.pacientesFiltrados = this.pacientesList.filter(p => {
       const id = safe(p.id);
       const nombreCompleto = `${safe(p.nombres)} ${safe(p.apellidos)}`.toLowerCase();
@@ -153,9 +161,14 @@ export class PacienteComponent {
     });
   }
   //Metodo para Limpiar Filtros
-    limpiarFiltros() {
+  limpiarFiltros() {
     this.filtros = { id: '', paciente: '', tipoDocumento: '', fechaNacimiento: '', telefono: '' };
     this.pacientesFiltrados = [...this.pacientesList];
+  }
+
+  // Método para verificar si hay filtros activos
+  hayFiltrosActivos(): boolean {
+    return Object.values(this.filtros).some(valor => valor.trim().length > 0);
   }
 
 
