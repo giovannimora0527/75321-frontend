@@ -21,7 +21,6 @@
 
 @import 'scss/custom';
 
-
 /* Ajusta el z-index del modal y su backdrop */
 .modal {
   z-index: 1040 !important; /* Menor que el de SweetAlert2 */
@@ -35,4 +34,3 @@
 .swal2-container {
   z-index: 1060 !important; /* Mayor que el modal (1040) */
 }
-

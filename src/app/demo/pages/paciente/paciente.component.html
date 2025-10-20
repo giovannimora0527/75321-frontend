@@ -1,56 +1,203 @@
+<ngx-spinner type="pacman" size="medium" color="#F5F2F2">
+  <p style="color:#fff"> {{titleSpinner}}</p>
+</ngx-spinner>
+
 <div class="container">
   <div class="card">
     <div class="card-header">
-      <h3 class="mb-0">
-        <i class="fa fa-user-md"></i>
-        &nbsp;Lista de pacientes
-      </h3>
-      <small>Estos son los pacientes registrados en el sistema.</small>
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h3 class="mb-0">
+            <i class="fa fa-user-injured"></i>
+            &nbsp;Lista de pacientes
+          </h3>
+          <small>Estos son los pacientes registrados en el sistema.</small>
+        </div>
+        <div class="col-lg-5 text-end">
+          <button class="btn btn-outline-secondary me-2" (click)="limpiarFiltros()">
+            <i class="fa fa-times-circle"></i> Limpiar Filtros
+          </button>
+          <button class="btn btn-outline-primary" (click)="abrirNuevoPaciente()">
+            <i class="fa fa-plus-circle"></i> Nuevo Paciente
+          </button>
+        </div>
+      </div>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Id del usuario</th>
-              <th>Tipo de Documento</th>
-              <th>numero de Documento</th>
-              <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Fecha de Nacimiento</th>
-              <th>Genero</th>
-              <th>Telefono</th>
-              <th>Dirección</th>
-              
-            </tr>
-          </thead>
-          <tbody *ngIf="pacienteList.length > 0">
-            <tr *ngFor="let m of pacienteList">
-              <td>{{ m.id }}</td>
-              <td>{{ m.usuario }}</td>
-              <td>{{ m.TipDoc }}</td>
-              <td>{{ m.numDoc }}</td>
-              <td>{{ m.Nom }}</td> 
-              <td>{{ m.Ape }}</td>
-              <td>{{ m.fechaNacimiento }}</td>
-              <td>{{ m.Gen }}</td>
-              <td>{{ m.Tel }}</td>
-              <td>{{ m.Dir }}</td>
-              
-               <td>
-                <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar médico">
-                  <i class="fa fa-edit"></i></button>
-              </td>
-            </tr>
-          </tbody>
-          <tbody *ngIf="pacienteList.length === 0">
-            <tr>
-              <td colspan="8" class="text-center">No hay medicos disponibles.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <p-table 
+        #dt
+        [value]="pacienteList" 
+        [paginator]="true" 
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pacientes"
+        [globalFilterFields]="['id', 'tipoDocumento', 'numeroDocumento', 'nombres', 'apellidos', 'fechaNacimiento', 'genero', 'telefono', 'direccion']"
+        [tableStyle]="{'min-width': '75rem'}"
+        styleClass="p-datatable-striped p-datatable-sm"
+        [loading]="loading">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="id" style="min-width:5rem">
+              Id <p-sortIcon field="id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="tipoDocumento" style="min-width:8rem">
+              Tipo Doc. <p-sortIcon field="tipoDocumento"></p-sortIcon>
+            </th>
+            <th pSortableColumn="numeroDocumento" style="min-width:10rem">
+              Número Doc. <p-sortIcon field="numeroDocumento"></p-sortIcon>
+            </th>
+            <th pSortableColumn="nombres" style="min-width:12rem">
+              Nombres <p-sortIcon field="nombres"></p-sortIcon>
+            </th>
+            <th pSortableColumn="apellidos" style="min-width:12rem">
+              Apellidos <p-sortIcon field="apellidos"></p-sortIcon>
+            </th>
+            <th pSortableColumn="fechaNacimiento" style="min-width:10rem">
+              Fecha Nac. <p-sortIcon field="fechaNacimiento"></p-sortIcon>
+            </th>
+            <th pSortableColumn="genero" style="min-width:7rem">
+              Género <p-sortIcon field="genero"></p-sortIcon>
+            </th>
+            <th pSortableColumn="telefono" style="min-width:10rem">
+              Teléfono <p-sortIcon field="telefono"></p-sortIcon>
+            </th>
+            <th pSortableColumn="direccion" style="min-width:15rem">
+              Dirección <p-sortIcon field="direccion"></p-sortIcon>
+            </th>
+            <th style="min-width:10rem">Acciones</th>
+          </tr>
+          <tr>
+            <th>
+              <p-columnFilter 
+                type="text" 
+                field="id" 
+                placeholder="Filtrar ID"
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                field="tipoDocumento" 
+                matchMode="equals" 
+                [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown 
+                    [ngModel]="value" 
+                    [options]="tiposDocumento" 
+                    (onChange)="filter($event.value)" 
+                    placeholder="Todos"
+                    [showClear]="true">
+                    <ng-template let-option pTemplate="item">
+                      <span>{{option.label}}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                type="text" 
+                field="numeroDocumento" 
+                placeholder="Filtrar Doc."
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                type="text" 
+                field="nombres" 
+                placeholder="Filtrar Nombres"
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                type="text" 
+                field="apellidos" 
+                placeholder="Filtrar Apellidos"
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                type="date" 
+                field="fechaNacimiento" 
+                placeholder="Filtrar Fecha"
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                field="genero" 
+                matchMode="equals" 
+                [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown 
+                    [ngModel]="value" 
+                    [options]="generos" 
+                    (onChange)="filter($event.value)" 
+                    placeholder="Todos"
+                    [showClear]="true">
+                    <ng-template let-option pTemplate="item">
+                      <span>{{option.label}}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                type="text" 
+                field="telefono" 
+                placeholder="Filtrar Teléfono"
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter 
+                type="text" 
+                field="direccion" 
+                placeholder="Filtrar Dirección"
+                [showMenu]="false">
+              </p-columnFilter>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-paciente>
+          <tr>
+            <td>{{ paciente.id }}</td>
+            <td>{{ paciente.tipoDocumento }}</td>
+            <td>{{ paciente.numeroDocumento }}</td>
+            <td>{{ paciente.nombres }}</td>
+            <td>{{ paciente.apellidos }}</td>
+            <td>{{ paciente.fechaNacimiento | date: 'yyyy-MM-dd' }}</td>
+            <td>{{ paciente.genero }}</td>
+            <td>{{ paciente.telefono }}</td>
+            <td>{{ paciente.direccion }}</td>
+            <td>
+              <button 
+                class="btn btn-outline-primary btn-sm" 
+                (click)="abrirEditarPaciente(paciente)">
+                <i class="fa fa-edit"></i> Editar
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" class="text-center">
+              No hay pacientes disponibles.
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </div>
 </div>
+
+<!-- Modal sigue igual... -->

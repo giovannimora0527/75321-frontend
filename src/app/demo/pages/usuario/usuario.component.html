@@ -1,3 +1,7 @@
+<ngx-spinner type="pacman" size = "medium" color = "#F5F2F2">
+  <p style="color:#fff"> {{titleSpinner}}</p>
+</ngx-spinner>
+
 <div class="container">
   <div class="card">
     <div class="card-header">
@@ -23,6 +27,7 @@
               <th>Nombre de usuario</th>
               <th>Rol</th>
               <th>Fecha de creacion</th>
+              <th>Contraseña</th>
               <th>Activo</th>
               <th>Acciones</th>
             </tr>
@@ -32,7 +37,8 @@
               <td>{{ usuario.id }}</td>
               <td>{{ usuario.username }}</td>
               <td>{{ usuario.rol }}</td>
-              <td>{{ usuario.fechaCreacion }}</td>
+              <td>{{ usuario.fechaCreacion | date: "yyyy-MM-dd HH:mm:ss" }}</td>
+              <td>{{ usuario.password }}</td>
               <td>
                 <i class="fa" [ngClass]="usuario.activo === true ? 'fa-check text-success' : 'fa-times text-danger'" aria-hidden="true"></i>
               </td>

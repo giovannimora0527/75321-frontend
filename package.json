@@ -33,6 +33,9 @@
     "bootstrap": "^5.3.3",
     "ngx-bootstrap": "^19.0.2",
     "ngx-scrollbar": "16.1.1",
+    "ngx-spinner": "^19.0.0",
+    "primeicons": "^7.0.0",
+    "primeng": "^19.0.6",
     "rxjs": "~7.8.1",
     "screenfull": "6.0.2",
     "sweetalert2": "^11.17.2",
@@ -57,6 +60,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "prettier": "3.4.2",
+    "sass": "^1.93.2",
     "typescript": "5.6.3",
     "typescript-eslint": "8.18.0"
   }
