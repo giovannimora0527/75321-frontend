@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { PacienteService } from './service/paciente.service';
 import { Paciente } from './models/paciente';
 import { CommonModule } from '@angular/common';
@@ -15,54 +15,50 @@ import {
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
 
-// Importaciones de PrimeNG
-import { TableModule } from 'primeng/table';
-import { Table } from 'primeng/table';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-
 @Component({
   selector: 'app-paciente',
-  standalone: true,
-  imports: [
-    CommonModule, 
-    FormsModule, 
-    ReactiveFormsModule, 
-    NgxSpinnerModule,
-    TableModule,
-    DropdownModule,
-    InputTextModule,
-    ButtonModule
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './paciente.component.html',
   styleUrl: './paciente.component.scss'
 })
 export class PacienteComponent {
-  @ViewChild('dt') dt: Table | undefined;
-
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   titleModal: string = '';
   titleBoton: string = '';
+  
+  // Lista original de pacientes (sin modificar)
   pacienteList: Paciente[] = [];
+  
+  // Lista filtrada que se muestra en la tabla
+  pacienteListFiltrada: Paciente[] = [];
+  
   pacienteSelected: Paciente;
   titleSpinner: string = 'Cargando...';
-  loading: boolean = false;
 
-  tiposDocumento = [
-    { label: 'CC', value: 'CC' },
-    { label: 'TI', value: 'TI' },
-    { label: 'CE', value: 'CE' },
-    { label: 'PAS', value: 'PAS' }
-  ];
+  // Objeto que contiene todos los filtros
+  filtros = {
+    id: '',
+    tipoDocumento: '',
+    numeroDocumento: '',
+    nombres: '',
+    apellidos: '',
+    fechaNacimiento: '',
+    genero: '',
+    telefono: '',
+    direccion: ''
+  };
 
-  generos = [
-    { label: 'Masculino', value: 'M' },
-    { label: 'Femenino', value: 'F' }
-  ];
-
-  form: FormGroup;
+  form: FormGroup = new FormGroup({
+    tipoDocumento: new FormControl(''),
+    numeroDocumento: new FormControl(''),
+    nombres: new FormControl(''),
+    apellidos: new FormControl(''),
+    fechaNacimiento: new FormControl(''),
+    genero: new FormControl(''),
+    telefono: new FormControl(''),
+    direccion: new FormControl('')
+  });
 
   constructor(
     private readonly pacienteService: PacienteService,
@@ -91,28 +87,77 @@ export class PacienteComponent {
   }
 
   listarPacientes() {
-    this.loading = true;
     this.spinner.show();
     this.pacienteService.listarPacientes().subscribe({
       next: (data) => {
-        this.loading = false;
         this.spinner.hide();
         this.pacienteList = data;
+        // Inicializar la lista filtrada con todos los pacientes
+        this.pacienteListFiltrada = [...this.pacienteList];
       },
       error: (error) => {
-        this.loading = false;
         this.spinner.hide();
         console.error('Error al cargar pacientes: ', error);
       }
     });
   }
 
-  limpiarFiltros() {
-    if (this.dt) {
-      this.dt.clear();
-    }
+  /**
+   * Aplica los filtros a la lista de pacientes
+   * Se ejecuta cada vez que cambia un valor en los inputs de filtro
+   */
+  aplicarFiltros() {
+    this.pacienteListFiltrada = this.pacienteList.filter(paciente => {
+      // Filtro por ID
+      const cumpleId = !this.filtros.id || 
+        paciente.id.toString().includes(this.filtros.id);
+
+      // Filtro por Tipo de Documento
+      const cumpleTipoDoc = !this.filtros.tipoDocumento || 
+        paciente.tipoDocumento === this.filtros.tipoDocumento;
+
+      // Filtro por Número de Documento (búsqueda parcial, case insensitive)
+      const cumpleNumDoc = !this.filtros.numeroDocumento || 
+        paciente.numeroDocumento.toLowerCase()
+          .includes(this.filtros.numeroDocumento.toLowerCase());
+
+      // Filtro por Nombres (búsqueda parcial, case insensitive)
+      const cumpleNombres = !this.filtros.nombres || 
+        paciente.nombres.toLowerCase()
+          .includes(this.filtros.nombres.toLowerCase());
+
+      // Filtro por Apellidos (búsqueda parcial, case insensitive)
+      const cumpleApellidos = !this.filtros.apellidos || 
+        paciente.apellidos.toLowerCase()
+          .includes(this.filtros.apellidos.toLowerCase());
+
+      // Filtro por Fecha de Nacimiento (exacta)
+      const cumpleFecha = !this.filtros.fechaNacimiento || 
+        this.formatearFecha(paciente.fechaNacimiento) === this.filtros.fechaNacimiento;
+
+      // Filtro por Género
+      const cumpleGenero = !this.filtros.genero || 
+        paciente.genero === this.filtros.genero;
+
+      // Filtro por Teléfono (búsqueda parcial)
+      const cumpleTelefono = !this.filtros.telefono || 
+        (paciente.telefono && paciente.telefono.includes(this.filtros.telefono));
+
+      // Filtro por Dirección (búsqueda parcial, case insensitive)
+      const cumpleDireccion = !this.filtros.direccion || 
+        (paciente.direccion && paciente.direccion.toLowerCase()
+          .includes(this.filtros.direccion.toLowerCase()));
+
+      // El paciente debe cumplir TODOS los filtros activos
+      return cumpleId && cumpleTipoDoc && cumpleNumDoc && cumpleNombres && 
+             cumpleApellidos && cumpleFecha && cumpleGenero && 
+             cumpleTelefono && cumpleDireccion;
+    });
   }
 
+  /**
+   * Formatea una fecha al formato YYYY-MM-DD
+   */
   private formatearFecha(fecha: Date | string): string {
     if (!fecha) return '';
     const d = new Date(fecha);
@@ -120,6 +165,24 @@ export class PacienteComponent {
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Limpia todos los filtros y muestra la lista completa
+   */
+  limpiarFiltros() {
+    this.filtros = {
+      id: '',
+      tipoDocumento: '',
+      numeroDocumento: '',
+      nombres: '',
+      apellidos: '',
+      fechaNacimiento: '',
+      genero: '',
+      telefono: '',
+      direccion: ''
+    };
+    this.pacienteListFiltrada = [...this.pacienteList];
   }
 
   closeModal() {
@@ -186,7 +249,8 @@ export class PacienteComponent {
         },
         error: (error) => {
           this.spinner.hide();
-          Swal.fire('Error', error.error?.message || 'Error al guardar', 'error');
+          console.error('Error al guardar paciente: ', error);
+          Swal.fire('Error', error.error.message || 'Error al guardar', 'error');
         }
       });
     } else {
@@ -200,7 +264,8 @@ export class PacienteComponent {
         },
         error: (error) => {
           this.spinner.hide();
-          Swal.fire('Error', error.error?.message || 'Error al actualizar', 'error');
+          console.error('Error al actualizar paciente: ', error);
+          Swal.fire('Error', error.error.message || 'Error al actualizar', 'error');
         }
       });
     }
