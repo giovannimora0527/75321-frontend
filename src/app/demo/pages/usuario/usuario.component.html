@@ -1,1 +1,150 @@
-<p>usuario componente nuevo!</p>
+<div class="container-fluid p-4">
+  
+  <!-- Título Principal -->
+  <div class="row mb-4">
+    <div class="col">
+      <h2>Gestión de Usuarios</h2>
+    </div>
+  </div>
+
+  <!-- Sección de Búsqueda -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input 
+        type="text" 
+        [(ngModel)]="filtro" 
+        placeholder="Filtrar usuarios..." 
+        class="form-control" 
+      />
+    </div>
+  </div>
+
+  <!-- Tabla de Usuarios -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Rol</th>
+                <th>Documento</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let u of filtrar()">
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.rol }}</td>
+                <td>{{ u.numeroDocumento }}</td>
+                <td>
+                  <span class="badge" [ngClass]="u.activo ? 'bg-success' : 'bg-secondary'">
+                    {{ u.activo ? 'Sí' : 'No' }}
+                  </span>
+                </td>
+                <td>
+                  <button 
+                    class="btn btn-sm btn-primary me-1" 
+                    (click)="editar(u)"
+                    title="Editar usuario">
+                    Editar
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-danger" 
+                    (click)="eliminar(u.id!)"
+                    title="Eliminar usuario">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-4" />
+
+  <!-- Formulario de Usuario -->
+  <div class="row">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">{{ usuarioSeleccionado.id ? 'Editar Usuario' : 'Nuevo Usuario' }}</h5>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="guardar()">
+            <div class="mb-3">
+              <label class="form-label">Usuario</label>
+              <input 
+                [(ngModel)]="usuarioSeleccionado.username" 
+                name="username" 
+                placeholder="Nombre de usuario" 
+                class="form-control" 
+                required 
+              />
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Rol</label>
+                <input 
+                  [(ngModel)]="usuarioSeleccionado.rol" 
+                  name="rol" 
+                  placeholder="Rol del usuario" 
+                  class="form-control" 
+                  required 
+                />
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Documento</label>
+                <input 
+                  [(ngModel)]="usuarioSeleccionado.numeroDocumento" 
+                  name="numeroDocumento" 
+                  placeholder="Número de documento" 
+                  class="form-control" 
+                  required 
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input 
+                  type="checkbox" 
+                  [(ngModel)]="usuarioSeleccionado.activo" 
+                  name="activo" 
+                  class="form-check-input" 
+                  id="activoCheck"
+                />
+                <label class="form-check-label" for="activoCheck">
+                  Usuario Activo
+                </label>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex">
+              <button type="submit" class="btn btn-success">
+                {{ usuarioSeleccionado.id && usuarioSeleccionado.id > 0 ? 'Actualizar Usuario' : 'Guardar Usuario' }}
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="limpiarFormulario()"
+                *ngIf="usuarioSeleccionado.id && usuarioSeleccionado.id > 0">
+                Cancelar Edición
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
