@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="mb-0">
+        <i class="fa fa-user-md"></i>
+        &nbsp;Lista de medicamentos
+      </h3>
+      <small>Estos son los medicamentos registrados en el sistema.</small>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Nombre</th>
+              <th>descripción</th>
+              <th>Presentación</th>
+              <th>Fecha Compra</th>
+              <th>Fecha de Vencimiento</th>
+              <th>Fecha de Creación</th>
+              <th>Fecha de Modificación</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="medicamentoList.length > 0">
+            <tr *ngFor="let m of medicamentoList">
+              <td>{{ m.id }}</td>
+              <td>{{ m.nombre }}</td>
+              <td>{{ m.descripcion }}</td>
+              <td>{{ m.presentacion }}</td>
+              <td>{{ m.fechaCompra }}</td>
+              <td>{{ m.fechaVence }}</td>
+              <td>{{ m.fechaCreacionRegistro }}</td>
+              <td>{{ m.fechaModificacionRegistro }}</td>
+               <td>
+                <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar medicamento">
+                  <i class="fa fa-edit"></i></button>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="medicamentoList.length === 0">
+            <tr>
+              <td colspan="8" class="text-center">No hay medicamentos disponibles.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
