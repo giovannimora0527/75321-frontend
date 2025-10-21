@@ -1,0 +1,52 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1 fw-bold text-dark">
+        <i class="fa fa-calendar-check me-2 text-sky-700"></i>
+        Gestión de Citas
+      </h2>
+      <p class="text-muted mb-0">Administra y visualiza todas las citas médicas</p>
+    </div>
+    <button class="btn btn-sky btn-lg px-4 shadow" (click)="abrirNuevaCita()">
+      <i class="fa fa-plus me-2"></i>
+      Nueva Cita
+    </button>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="row g-3 mb-4" *ngIf="citasList.length > 0">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm sky-gradient text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="mb-1 text-white-75">Total de Citas</p>
+              <h3 class="mb-0 fw-bold">{{ citasList.length }}</h3>
+            </div>
+            <div class="pill-ghost">
+              <i class="fa fa-calendar-alt fa-2x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm mint-sky-gradient text-sky-900">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="mb-1 text-sky-900-75">Última Actualización</p>
+              <h6 class="mb-0 fw-semibold">{{ fechaActual | date:'short' }}</h6>
+            </div>
+            <div class="pill-ghost-dark">
+              <i class="fa fa-clock fa-2x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm soft-sky-gradie

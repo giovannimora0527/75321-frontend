@@ -1,0 +1,48 @@
+<header class="sky-header shadow-sm">
+  <div class="m-header d-flex align-items-center" [style.display]="this.headerStyle">
+    <!-- Botón menú móvil -->
+    <button
+      id="mobile-collapse1"
+      type="button"
+      class="mobile-menu btn-icon"
+      (click)="this.NavCollapsedMob.emit()"
+      aria-label="Abrir menú lateral"
+    >
+      <i class="feather icon-menu"></i>
+    </button>
+
+    <!-- Logo -->
+    <a [routerLink]="['/dashboard/default']" class="b-brand d-flex align-items-center text-decoration-none ms-2">
+      <div class="b-bg d-flex align-items-center justify-content-center me-2">
+        <i class="feather icon-trending-up"></i>
+      </div>
+      <span class="b-title fw-semibold text-white">Datta Able</span>
+    </a>
+  </div>
+
+  <!-- Botón menú superior móvil -->
+  <button
+    id="mobile-header"
+    type="button"
+    class="mobile-menu btn-icon"
+    [ngClass]="{ on: this.menuClass }"
+    (click)="toggleMobOption()"
+    aria-label="Mostrar opciones"
+  >
+    <i class="feather icon-more-horizontal"></i>
+  </button>
+
+  <!-- Contenido colapsable -->
+  <div class="collapse navbar-collapse px-4" [style.display]="this.collapseStyle">
+    <app-nav-left class="me-auto" [style.display]="this.headerStyle"></app-nav-left>
+    <app-nav-right class="ms-auto"></app-nav-right>
+  </div>
+</header>
+
+<!-- Overlay -->
+<div
+  class="pc-menu-overlay"
+  (click)="closeMenu()"
+  (keydown)="handleKeyDown($event)"
+  tabindex="0"
+></div>

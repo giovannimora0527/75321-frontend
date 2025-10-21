@@ -1,0 +1,48 @@
+:root{
+  --sky:#00C6F0;
+  --sky-light:#E9F9FF;
+  --sky-hover:#00B4DB;
+}
+
+.header-sky {
+  background-color: var(--sky);
+  color: #073042;
+}
+
+.thead-sky {
+  background: var(--sky);
+  color: #0b2a3a;
+}
+
+.bg-sky {
+  background: var(--sky) !important;
+  color: #073042;
+}
+
+.btn-sky {
+  background: var(--sky);
+  border: none;
+  &:hover { background: var(--sky-hover); }
+}
+
+.btn-outline-sky {
+  border: 1px solid var(--sky);
+  color: #0f4c5c;
+  background: #fff;
+  &:hover {
+    background: var(--sky);
+    color: #fff;
+    border-color: var(--sky);
+  }
+}
+
+.table-hover tbody tr:hover { background: var(--sky-light); }
+.btn { transition: all .2s ease-in-out; }
+.btn:hover { transform: translateY(-2px); }
+.card { border-radius: .5rem; overflow: hidden; }
+.card-header { border-top-left-radius: .5rem !important; border-top-right-radius: .5rem !important; }
+.badge { font-size: .9rem; }
+
+.filters-row th { background: #f8f9fa; }
+.table thead th { border-bottom: 2px solid var(--sky); }
+.table tbody tr:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }

@@ -1,0 +1,267 @@
+<div class="container-fluid py-4">
+  <div class="card shadow-sm border-0">
+    <!-- Encabezado azul cielo -->
+    <div class="card-header text-white border-0" style="background-color:#00C6F0;">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h4 class="mb-1 fw-bold">
+            <i class="fa fa-users me-2"></i>
+            Gestión de Usuarios
+          </h4>
+          <p class="mb-0 opacity-75">
+            <i class="fa fa-info-circle me-1"></i>
+            Administra los usuarios del sistema con sus roles y permisos
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+          <button class="btn btn-light btn-lg shadow-sm fw-semibold" (click)="abrirNuevoUsuario()">
+            <i class="fa fa-plus-circle me-2"></i>
+            Nuevo Usuario
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <!-- thead en azul cielo con texto oscuro para legibilidad -->
+          <thead style="background:#00C6F0; color:#0b2a3a;">
+            <tr>
+              <th class="border-0 fw-semibold text-center" style="width: 8%;">
+                <i class="fa fa-hashtag me-1"></i>ID
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-user me-1"></i>Usuario
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-shield-alt me-1"></i>Rol
+              </th>
+              <th class="border-0 fw-semibold">
+                <i class="fa fa-calendar me-1"></i>Fecha Creación
+              </th>
+              <th class="border-0 fw-semibold text-center" style="width: 10%;">
+                <i class="fa fa-toggle-on me-1"></i>Estado
+              </th>
+              <th class="border-0 fw-semibold text-center" style="width: 12%;">
+                <i class="fa fa-cogs me-1"></i>Acciones
+              </th>
+            </tr>
+          </thead>
+
+          <tbody *ngIf="usuariosList.length > 0">
+            <tr *ngFor="let usuario of usuariosList" class="align-middle">
+              <td class="text-center">
+                <span class="badge bg-sky rounded-pill px-3 py-2 fw-semibold">{{ usuario.id }}</span>
+              </td>
+
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-sm bg-sky rounded-circle d-flex align-items-center justify-content-center me-3">
+                    <i class="fa fa-user text-dark"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-semibold">{{ usuario.username }}</h6>
+                    <small class="text-muted">Usuario del Sistema</small>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <span class="badge px-3 py-2 fw-semibold"
+                      [ngClass]="{
+                        'bg-danger': usuario.rol === 'ADMIN',
+                        'bg-info text-dark': usuario.rol === 'MEDICO',
+                        'bg-warning text-dark': usuario.rol === 'PACIENTE'
+                      }">
+                  <i class="fa fa-shield-alt me-1"></i>{{ usuario.rol }}
+                </span>
+              </td>
+
+              <td>
+                <span class="text-muted">
+                  <i class="fa fa-calendar-alt me-1"></i>
+                  {{ usuario.fechaCreacion | date:'short' }}
+                </span>
+              </td>
+
+              <td class="text-center">
+                <span class="badge px-3 py-2 fw-semibold"
+                      [ngClass]="usuario.activo === true ? 'bg-success' : 'bg-danger'">
+                  <i class="fa me-1" [ngClass]="usuario.activo === true ? 'fa-check' : 'fa-times'"></i>
+                  {{ usuario.activo === true ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+
+              <td class="text-center">
+                <button class="btn btn-outline-sky btn-sm shadow-sm"
+                        (click)="abrirEditarUsuario(usuario)"
+                        title="Editar usuario">
+                  <i class="fa fa-edit me-1"></i> Editar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+
+          <!-- Vacío -->
+          <tbody *ngIf="usuariosList.length === 0">
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <div class="d-flex flex-column align-items-center empty-state">
+                  <div class="mb-3">
+                    <i class="fa fa-users fa-3x text-muted opacity-50"></i>
+                  </div>
+                  <h5 class="text-muted mb-2">No hay usuarios registrados</h5>
+                  <p class="text-muted mb-3">Comienza agregando el primer usuario al sistema</p>
+                  <button class="btn btn-sky btn-sm text-white" (click)="abrirNuevoUsuario()">
+                    <i class="fa fa-plus me-1"></i> Agregar Usuario
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer bg-light border-0 py-3" *ngIf="usuariosList.length > 0">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <span class="text-muted">
+            <i class="fa fa-chart-bar me-1"></i>
+            Total de usuarios: <strong>{{ usuariosList.length }}</strong>
+          </span>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <small class="text-muted">
+            <i class="fa fa-clock me-1"></i>
+            Última actualización: {{ fechaActual | date:'short' }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nuevo/Editar Usuario -->
+<div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Header del modal en azul cielo -->
+      <div class="modal-header" style="background:#00C6F0; color:#0b2a3a;">
+        <h5 class="modal-title fw-semibold" id="modalUsuarioLabel">{{ titleModal }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Cerrar"></button>
+      </div>
+
+      <!-- Campos -->
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="row g-3">
+            <!-- Usuario -->
+            <div class="col-md-6">
+              <label for="username" class="form-label">Nombre de usuario</label>
+              <input type="text" formControlName="username" class="form-control" id="username"
+                     placeholder="Ingrese el nombre de usuario"
+                     [ngModel]="usuarioSelected ? usuarioSelected.username : ''"/>
+              <div *ngIf="form.get('username')?.hasError('required') && form.get('username')?.touched" class="text-danger small">
+                El nombre de usuario es requerido.
+              </div>
+              <div *ngIf="form.get('username')?.hasError('minLength') && form.get('username')?.touched" class="text-danger small">
+                Debe tener al menos 4 caracteres.
+              </div>
+              <div *ngIf="form.get('username')?.hasError('maxLength') && form.get('username')?.touched" class="text-danger small">
+                Máximo 12 caracteres.
+              </div>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="col-md-6">
+              <label for="password" class="form-label">Contraseña</label>
+              <input type="password" formControlName="password" class="form-control" id="password"
+                     placeholder="Ingrese la contraseña de usuario"/>
+              <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger small">
+                La contraseña es requerida.
+              </div>
+            </div>
+
+            <!-- Fecha de creación -->
+            <div class="col-md-6">
+              <label for="fechaCreacion" class="form-label">Fecha de creación</label>
+              <input type="date" formControlName="fechaCreacion" class="form-control" id="fechaCreacion"
+                     [ngModel]="usuarioSelected ? usuarioSelected.fechaCreacion : ''"/>
+              <div *ngIf="form.get('fechaCreacion')?.hasError('required') && form.get('fechaCreacion')?.touched" class="text-danger small">
+                La fecha de creación es requerida.
+              </div>
+            </div>
+
+            <!-- Rol -->
+            <div class="col-md-6">
+              <label for="rol" class="form-label">Rol</label>
+              <select formControlName="rol" class="form-control" id="rol"
+                      [ngModel]="usuarioSelected ? usuarioSelected.rol : ''">
+                <option value="" disabled selected>Seleccione el rol de usuario</option>
+                <option value="ADMIN">ADMIN</option>
+                <option value="PACIENTE">PACIENTE</option>
+                <option value="MEDICO">MEDICO</option>
+              </select>
+              <div *ngIf="form.get('rol')?.hasError('required') && form.get('rol')?.touched" class="text-danger small">
+                El rol del usuario es requerido.
+              </div>
+            </div>
+
+            <!-- Estado (solo edición) -->
+            <div class="col-md-6" *ngIf="modoFormulario === 'E'">
+              <label for="activo" class="form-label">Estado</label>
+              <select formControlName="activo" class="form-control" id="activo"
+                      [ngModel]="usuarioSelected ? usuarioSelected.activo : ''">
+                <option value="" disabled selected>Seleccione una opción</option>
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+              <div *ngIf="form.get('activo')?.hasError('required') && form.get('activo')?.touched" class="text-danger small">
+                El estado del usuario es requerido.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-sky" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn btn-sky" (click)="guardarUsuario()">{{ titleBoton }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root{
+    --sky:#00C6F0;
+    --sky-light:#E9F9FF;
+    --sky-hover:#00B4DB;
+  }
+
+  .bg-sky{ background: var(--sky)!important; color:#073042; }
+
+  .table-hover tbody tr:hover{ background: var(--sky-light); }
+  .btn{ transition: all .2s ease-in-out; }
+  .btn:hover{ transform: translateY(-2px); }
+  .btn-sky{ background: var(--sky); color:#fff; border:none; }
+  .btn-sky:hover{ background: var(--sky-hover); }
+  .btn-outline-sky{ border:1px solid var(--sky); color:#0f4c5c; background:#fff; }
+  .btn-outline-sky:hover{ background: var(--sky); color:#fff; border-color: var(--sky-hover); }
+
+  .card{ border-radius:.75rem; overflow:hidden; }
+  .card-header{ border-top-left-radius:.75rem !important; border-top-right-radius:.75rem !important; }
+
+  .avatar-sm{ width:40px; height:40px; font-size:14px; }
+
+  /* Modal */
+  .modal-content{ border-radius:.75rem; overflow:hidden; }
+  .modal-header{ border-bottom: 1px solid rgba(0,0,0,.06); }
+  .modal-footer{ border-top: 1px solid rgba(0,0,0,.06); }
+</style>
