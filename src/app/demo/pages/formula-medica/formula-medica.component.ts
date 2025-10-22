@@ -28,6 +28,8 @@ export class FormulaMedicaComponent implements OnInit {
 
   form: FormGroup;
 
+  today = new Date().toISOString().split('T')[0];
+
   ngOnInit() {
     this.listarFormulasMedicas();
     this.listarCitas();
@@ -41,8 +43,8 @@ export class FormulaMedicaComponent implements OnInit {
     private readonly formBuilder: FormBuilder
   ) {
     this.form = this.formBuilder.group({
-      cita: ['', Validators.required],
-      medicamento: ['', Validators.required],
+      citaId: ['', Validators.required],
+      medicamentoId: ['', Validators.required],
       dosis: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       indicaciones: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
     })
@@ -95,8 +97,8 @@ export class FormulaMedicaComponent implements OnInit {
   abrirEditarFormulaMedica(formulaMedica: FormulaMedica) {
     this.formulaMedicaSelected = formulaMedica;
     this.form.patchValue({
-      cita: formulaMedica.cita?.id,
-      medicamento: formulaMedica.medicamento?.id,
+      citaId: formulaMedica.cita?.id,
+      medicamentoId: formulaMedica.medicamento?.id,
       dosis: formulaMedica.dosis,
       indicaciones: formulaMedica.indicaciones,
     });
@@ -109,17 +111,13 @@ export class FormulaMedicaComponent implements OnInit {
       return;
     }
 
-    const formValue = this.form.value;
-
-    const formulaMedica = {
-      id: this.formulaMedicaSelected?.id || 0,
-      cita: this.form.value.cita,
-      medicamento: this.form.value.medicamento,
-      dosis: this.form.value.dosis,
-      indicaciones: this.form.value.indicaciones,
-      fechaCreacionRegistro: new Date(),
-    } as FormulaMedica;
-
+    const { citaId, medicamentoId, dosis, indicaciones } = this.form.value;
+    const formulaMedica: FormulaMedica = {
+      citaId,
+      medicamentoId,
+      dosis,
+      indicaciones,
+    };
 
     this.formulaMedicaService.guardarFormulaMedica(formulaMedica).subscribe({
       next: (data) => {
@@ -134,3 +132,5 @@ export class FormulaMedicaComponent implements OnInit {
     });
   }
 }
+
+

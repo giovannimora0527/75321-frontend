@@ -9,7 +9,7 @@ import { Cita } from '../cita/model/cita';
 import { CitaService } from '../cita/service/cita.service';
 import { FormulaMedica } from '../formula-medica/model/formula-medica';
 import { FormulaMedicaService } from '../formula-medica/service/formula-medica.service';
-import { Especializacion } from '../medico/models/especializacion';
+import { Especializacion } from '../especializacion/model/especializacion';
 import { EspecializacionService } from '../especializacion/service/especializacion.service';
 import { Medicamento } from '../medicamento/model/medicamento';
 import { MedicamentoService } from '../medicamento/service/medicamento.service';
@@ -76,6 +76,30 @@ export class HistoriaMedicaComponent implements OnInit {
   listarHistoriasMedicas() {
     // Datos de prueba
     this.historiaMedicaList = [
+      {
+        id: 1,
+        pacienteId: 1,
+        medicoId: 2,
+        fechaCreacion: new Date(),
+        diagnostico: "Dolor de cabeza",
+        observaciones: "Reposo y hidratación",
+        citas: [],
+        formulasMedicas: [],
+        medicamentos: [],
+        especializacionId: 3
+      },
+      {
+        id: 2,
+        pacienteId: 3,
+        medicoId: 2,
+        fechaCreacion: new Date(),
+        diagnostico: "Gripe",
+        observaciones: "Tomar medicamentos y reposo",
+        citas: [],
+        formulasMedicas: [],
+        medicamentos: [],
+        especializacionId: 1
+      }
     ];
   }
 

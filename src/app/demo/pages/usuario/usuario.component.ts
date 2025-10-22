@@ -164,7 +164,6 @@ export class UsuarioComponent {
       this.form.get('activo').setValue(true);
       this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
         next: (data) => {
-          console.log(data);
           Swal.fire('Éxito', data.mensaje, 'success');
           this.closeModal();
           this.listarUsuarios();
@@ -177,7 +176,6 @@ export class UsuarioComponent {
     } else {
       this.usuarioService.actualizarUsuario(this.form.getRawValue()).subscribe({
         next: (data) => {
-          console.log(data);
           Swal.fire('Éxito', data.mensaje, 'success');
           this.closeModal();
           this.listarUsuarios();

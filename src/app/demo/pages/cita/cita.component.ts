@@ -9,10 +9,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
+import { FilterCitasPipe } from './pipes/filter-cita.pipe';
 
 @Component({
   selector: 'app-citas',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterCitasPipe],
   templateUrl: './cita.component.html',
   styleUrls: ['./cita.component.scss']
 })
@@ -26,7 +27,11 @@ export class CitaComponent implements OnInit {
   medicosList: Medico[] = [];
   citaSelected: Cita | null = null;
 
+  filtroColumna: string = '';
+
   form: FormGroup;
+
+  today = new Date().toISOString().split('T')[0];
 
   ngOnInit() {
     this.listarCitas();
@@ -61,7 +66,9 @@ export class CitaComponent implements OnInit {
 
   listarPacientes() {
     this.pacienteService.listarPacientes().subscribe({
+
       next: (data) => (this.pacientesList = data),
+
       error: (err) => console.error('Error al listar pacientes', err),
     })
   }
@@ -114,15 +121,16 @@ export class CitaComponent implements OnInit {
       return;
     }
 
-    const { fecha, hora, pacienteId, medicoId, estado, motivo } = this.form.value;
-
-    const cita: any = {
-      paciente: { id: pacienteId },
-      medico: { id: medicoId },
-      fechaHora: `${fecha}T${hora}`,
-      estado,
+    const { fecha, hora, pacienteId, medicoId, motivo, estado } = this.form.value;
+    const cita: Cita = {
+      pacienteId,
+      medicoId,
+      fechaHora: `${fecha}T${hora}:00`,
       motivo,
+      estado
     };
+
+
     this.citaService.guardarCita(cita).subscribe({
       next: (data) => {
         Swal.fire('Éxito', data.mensaje, 'success');
