@@ -1,7 +1,7 @@
 //lo que enviamos
 export class FormulaRq{
     citaId:number;
-    medicamentoid:number;
+    medicamentoId:number;
     dosis:string;
     indicaciones:string;
 }

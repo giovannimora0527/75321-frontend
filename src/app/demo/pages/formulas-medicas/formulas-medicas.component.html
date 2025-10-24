@@ -98,3 +98,87 @@
   </div>
 </div>
 
+<!-- Modal para Fórmulas -->
+<div class="modal fade" id="modalFormula" tabindex="-1" aria-labelledby="modalFormulaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalFormulaLabel">
+          <i class="fa fa-file-medical me-2"></i>
+          {{ titleModal }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">ID Cita *</label>
+              <input type="number" class="form-control" formControlName="citaid" 
+                     [class.is-invalid]="f['citaid'].invalid && f['citaid'].touched">
+              <div class="invalid-feedback" *ngIf="f['citaid'].invalid && f['citaid'].touched">
+                ID de cita es requerido
+              </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label class="form-label">ID Medicamento *</label>
+              <input type="number" class="form-control" formControlName="medicamentoid"
+                     [class.is-invalid]="f['medicamentoid'].invalid && f['medicamentoid'].touched">
+              <div class="invalid-feedback" *ngIf="f['medicamentoid'].invalid && f['medicamentoid'].touched">
+                ID de medicamento es requerido
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Nombre del Medicamento *</label>
+            <input type="text" class="form-control" formControlName="medicamentoNombre"
+                   [class.is-invalid]="f['medicamentoNombre'].invalid && f['medicamentoNombre'].touched">
+            <div class="invalid-feedback" *ngIf="f['medicamentoNombre'].invalid && f['medicamentoNombre'].touched">
+              Nombre del medicamento es requerido (mínimo 2 caracteres)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Dosis *</label>
+            <input type="text" class="form-control" formControlName="dosis"
+                   [class.is-invalid]="f['dosis'].invalid && f['dosis'].touched">
+            <div class="invalid-feedback" *ngIf="f['dosis'].invalid && f['dosis'].touched">
+              Dosis es requerida (mínimo 2 caracteres)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Indicaciones *</label>
+            <textarea class="form-control" rows="3" formControlName="indicaciones"
+                      [class.is-invalid]="f['indicaciones'].invalid && f['indicaciones'].touched"></textarea>
+            <div class="invalid-feedback" *ngIf="f['indicaciones'].invalid && f['indicaciones'].touched">
+              Indicaciones son requeridas (mínimo 5 caracteres)
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Fecha de Creación *</label>
+            <input type="date" class="form-control" formControlName="fechaCreacionRegistro"
+                   [class.is-invalid]="f['fechaCreacionRegistro'].invalid && f['fechaCreacionRegistro'].touched">
+            <div class="invalid-feedback" *ngIf="f['fechaCreacionRegistro'].invalid && f['fechaCreacionRegistro'].touched">
+              Fecha de creación es requerida
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            <i class="fa fa-times me-1"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-success" [disabled]="form.invalid">
+            <i class="fa fa-save me-1"></i> {{ titleBoton }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { Modal } from 'bootstrap';
+import Swal from 'sweetalert2';
 
 //Importamos lo neceario para los formularios
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  Validators
 } from '@angular/forms';
 
 // Importa los objetos necesarios de Bootstrap
@@ -37,11 +40,12 @@ export class FormulasMedicasComponent {
 
       //lo que se va inyectar en el formulario
       //Crear un campo Vacio
-      username:new FormControl(''),
-      password:new FormControl(''),
-      rol:new FormControl(''),
-      fechaCreacion:new FormControl(''),
-      activo:new FormControl(''),
+      citaid:new FormControl(''),
+      medicamentoid:new FormControl(''),
+      medicamentoNombre:new FormControl(''),
+      dosis:new FormControl(''),
+      indicaciones:new FormControl(''),
+      fechaCreacionRegistro:new FormControl(''),
   
     })
 
@@ -50,7 +54,7 @@ export class FormulasMedicasComponent {
       private readonly formBuilder: FormBuilder
     ){
       this.ListarFormulas();
-
+      this.inicializarFormulario();
     }
 
     //Logica De negocio
@@ -65,14 +69,127 @@ export class FormulasMedicasComponent {
     });
     }
 
+    guardarFormula() {
+      if (this.form.valid) {
+        const formValue = this.form.value;
+    
+        // 🔹 Mapeamos los datos al formato esperado por el backend
+        const formulaData = {
+          citaId: this.form.value.citaid,
+          medicamentoId: this.form.value.medicamentoid,
+          dosis: this.form.value.dosis,
+          indicaciones: this.form.value.indicaciones
+        };
+    
+        this.formulaService.CrearFormulas(formulaData).subscribe({
+          next: (response) => {
+            // ✅ Alerta de éxito
+            Swal.fire({
+              title: '¡Éxito!',
+              text: 'Fórmula creada correctamente',
+              icon: 'success',
+              confirmButtonText: 'Aceptar'
+            });
+            this.closeModal();
+            this.ListarFormulas();
+          },
+          error: (err) => {
+            // ❌ Alerta de error
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo crear la fórmula',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+            console.error('❌ Error al crear fórmula', err);
+          }
+        });
+      } else {
+        // ⚠️ Alerta de validación
+        Swal.fire({
+          title: 'Formulario incompleto',
+          text: 'Por favor completa todos los campos requeridos',
+          icon: 'warning',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    }
+    //Metodo para actualizar la formula necesitamos el service.ts
+
+
 
 
     //Logica del formulario
     //Valida los cambios de Manera asincrona
+    inicializarFormulario(){
+      this.form = this.formBuilder.group({
+        citaid: ['', [Validators.required]],
+        medicamentoid: ['', [Validators.required]],
+        medicamentoNombre: ['', [Validators.required, Validators.minLength(2)]],
+        dosis: ['', [Validators.required, Validators.minLength(2)]],
+        indicaciones: ['', [Validators.required, Validators.minLength(5)]],
+        fechaCreacionRegistro: ['', [Validators.required]]
+      });
+    }
+    //accder al formulario
+    get f(): {[key: string]: AbstractControl} {
+      return this.form.controls;
+    }
+    //Limpiar el formulario
+    limpiarFormulario(){
+      this.form.reset();
+      this.form.markAsPristine();
+      this.form.markAsUntouched();
+    }
+    //Implemenatcion de los metodos del modal
+    abrirNuevaFormula() {
+      this.formulaSelected = new Formula();
+      this.limpiarFormulario();
+      this.openModal('C');
+    }
     
-abrirNuevaFormula() { /* lógica para abrir modal o formulario */ }
-abrirEditarFormula(formula: any) { /* lógica para editar */ }
-trackById(index: number, item: any) { return item.id; }
-  
+    abrirEditarFormula(formula: Formula) {
+      this.limpiarFormulario();
+      this.formulaSelected = formula;
+      this.openModal('E');
+    }
+
+    // Método para abrir el modal
+    openModal(modo: string) {
+      this.titleModal = modo === 'C' ? 'Crear Fórmula' : 'Editar Fórmula';
+      this.titleBoton = modo === 'C' ? 'Guardar Fórmula' : 'Actualizar Fórmula';
+      this.modoFormulario = modo;
+      const modalElement = document.getElementById('modalFormula');
+      if (modalElement) {
+        this.modalInstance ??= new Modal(modalElement);
+        this.modalInstance.show();
+      }
+    }
+    //Usamos Track id luego para la actualizacion
+    trackById(index: number, item: any) { 
+      return item.id; 
+    }
+    //Manejamos el envio del formulario
+    onSubmit() {
+      if (this.modoFormulario === 'C') {
+        this.guardarFormula();
+      } else {
+        // Para editar (cuando tengas el servicio)
+        Swal.fire({
+          title: 'Función pendiente',
+          text: 'La función de editar estará disponible próximamente',
+          icon: 'info',
+          confirmButtonText: 'Aceptar'
+        });
+        this.closeModal();
+      }
+    }
+
+    // Método para cerrar el modal
+    closeModal() {
+      if (this.modalInstance) {
+        this.modalInstance.hide();
+      }
+    }
 
 }
