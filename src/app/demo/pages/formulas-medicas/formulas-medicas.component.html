@@ -25,13 +25,14 @@
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover mb-0">
-          <thead class="table-dark">
+          <thead class="table-success">
             <tr>
               <th class="text-center" style="width: 8%;">#</th>
               <th>Cita</th>
               <th>Medicamento</th>
               <th>Dosis</th>
               <th>Indicaciones</th>
+              <th>Fecha</th>
               <th style="width: 12%;" class="text-center">Acciones</th>
             </tr>
           </thead>
@@ -55,6 +56,12 @@
               </td>
               <td>{{ f.dosis }}</td>
               <td>{{ f.indicaciones }}</td>
+              <td>
+                <span class="text-muted">
+                  <i class="fa fa-calendar me-1"></i>
+                  {{ f.fechaCreacionRegistro | date:'yyyy-MM-dd' }}
+                </span>
+              </td>
               <td class="text-center">
                 <button class="btn btn-outline-primary btn-sm shadow-sm"
                         (click)="abrirEditarFormula(f)"
@@ -113,7 +120,8 @@
 <div class="modal fade" id="modalFormula" tabindex="-1" aria-labelledby="modalFormulaLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
+      <div class="modal-header text-white" 
+           [ngClass]="{'bg-success': modoFormulario === 'C', 'bg-primary': modoFormulario === 'E'}">
         <h5 class="modal-title" id="modalFormulaLabel">
           <i class="fa fa-file-medical me-2"></i>
           {{ titleModal }}
@@ -173,6 +181,7 @@
           <div class="mb-3">
             <label class="form-label">Fecha de Creación *</label>
             <input type="date" class="form-control" formControlName="fechaCreacionRegistro"
+                   [readonly]="modoFormulario === 'E'"
                    [class.is-invalid]="f['fechaCreacionRegistro'].invalid && f['fechaCreacionRegistro'].touched">
             <div class="invalid-feedback" *ngIf="f['fechaCreacionRegistro'].invalid && f['fechaCreacionRegistro'].touched">
               Fecha de creación es requerida

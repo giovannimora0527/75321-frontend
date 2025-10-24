@@ -21,4 +21,14 @@ export class FormulaMedicasService {
   CrearFormulas(body:FormulaRq):Observable<Formula[]>{
     return this.backend.post<Formula[]>(this.apiurl,this.endpoint,'crear',body)
   }
+  //ActualizarFormulas
+  ActualizarFormulas(id: number, body: any): Observable<Formula> {
+    return this.backend.post<Formula>(
+      this.apiurl,
+      this.endpoint,
+      `actualizar/${id}`,
+      body
+    );
+  }
+  
 }

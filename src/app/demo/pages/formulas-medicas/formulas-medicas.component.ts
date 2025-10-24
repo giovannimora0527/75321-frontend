@@ -99,7 +99,7 @@ export class FormulasMedicasComponent {
             this.ListarFormulas();
           },
           error: (err) => {
-            this.isLoading = false; // ✅ Desactivar spinner
+            this.isLoading = false; //  Desactivar spinner
             //  Alerta de error
             Swal.fire({
               title: 'Error',
@@ -121,6 +121,54 @@ export class FormulasMedicasComponent {
       }
     }
     //Metodo para actualizar la formula necesitamos el service.ts
+    actualizarFormula() {
+      if (this.form.valid && this.formulaSelected?.id) {
+        this.isLoading = true;
+    
+        const body = {
+          citaId: this.form.value.citaid,
+          medicamentoId: this.form.value.medicamentoid,
+          dosis: this.form.value.dosis,
+          indicaciones: this.form.value.indicaciones
+        };
+    
+        this.formulaService.ActualizarFormulas(this.formulaSelected.id, body).subscribe({
+          next: (response) => {
+            this.isLoading = false;
+    
+            Swal.fire({
+              title: '¡Actualizado!',
+              text: 'La fórmula fue actualizada correctamente',
+              icon: 'success',
+              confirmButtonText: 'Aceptar'
+            });
+    
+            this.closeModal();
+            this.ListarFormulas(); // Refrescamos lista
+          },
+          error: (err) => {
+            this.isLoading = false;
+    
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudo actualizar la fórmula',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+    
+            console.error('❌ Error al actualizar fórmula', err);
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Formulario incompleto',
+          text: 'Por favor completa todos los campos requeridos',
+          icon: 'warning',
+          confirmButtonText: 'Aceptar'
+        });
+      }
+    }
+    
 
 
 
@@ -157,6 +205,17 @@ export class FormulasMedicasComponent {
     abrirEditarFormula(formula: Formula) {
       this.limpiarFormulario();
       this.formulaSelected = formula;
+      //Recordar que el codigo se ejecuta secuencial
+      //Precargar los valores del cual vamos a editar
+      this.form.patchValue({
+        citaid: formula.citaid,
+        medicamentoid: formula.medicamentoid,
+        medicamentoNombre: formula.medicamentoNombre,
+        dosis: formula.dosis,
+        indicaciones: formula.indicaciones,
+        fechaCreacionRegistro: formula.fechaCreacionRegistro
+      });
+
       this.openModal('E');
     }
 
@@ -178,16 +237,9 @@ export class FormulasMedicasComponent {
     //Manejamos el envio del formulario
     onSubmit() {
       if (this.modoFormulario === 'C') {
-        this.guardarFormula();
-      } else {
-        // Para editar (cuando tengas el servicio)
-        Swal.fire({
-          title: 'Función pendiente',
-          text: 'La función de editar estará disponible próximamente',
-          icon: 'info',
-          confirmButtonText: 'Aceptar'
-        });
-        this.closeModal();
+        this.guardarFormula();  // 
+      } else if (this.modoFormulario === 'E') {
+        this.actualizarFormula();  //
       }
     }
 
