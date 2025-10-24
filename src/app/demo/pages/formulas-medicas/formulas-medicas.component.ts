@@ -34,6 +34,7 @@ export class FormulasMedicasComponent {
   formulaList: Formula[] = [];
   formulaSelected:Formula;
   fechaActual = new Date();
+  isLoading = false;
 
     //Contenedor de los campos del formulario
     form:FormGroup=new FormGroup({
@@ -69,11 +70,14 @@ export class FormulasMedicasComponent {
     });
     }
 
+    //Logica de guardar  formula con sweet Alert
     guardarFormula() {
       if (this.form.valid) {
+        this.isLoading = true; // ✅ Activar spinner
+        
         const formValue = this.form.value;
     
-        // 🔹 Mapeamos los datos al formato esperado por el backend
+        // 🔹 Mapear con camel case
         const formulaData = {
           citaId: this.form.value.citaid,
           medicamentoId: this.form.value.medicamentoid,
@@ -83,7 +87,8 @@ export class FormulasMedicasComponent {
     
         this.formulaService.CrearFormulas(formulaData).subscribe({
           next: (response) => {
-            // ✅ Alerta de éxito
+            this.isLoading = false; // ✅ Desactivar spinner
+            //  Alerta de éxito
             Swal.fire({
               title: '¡Éxito!',
               text: 'Fórmula creada correctamente',
@@ -94,7 +99,8 @@ export class FormulasMedicasComponent {
             this.ListarFormulas();
           },
           error: (err) => {
-            // ❌ Alerta de error
+            this.isLoading = false; // ✅ Desactivar spinner
+            //  Alerta de error
             Swal.fire({
               title: 'Error',
               text: 'No se pudo crear la fórmula',
@@ -105,7 +111,7 @@ export class FormulasMedicasComponent {
           }
         });
       } else {
-        // ⚠️ Alerta de validación
+        // Alerta de validación
         Swal.fire({
           title: 'Formulario incompleto',
           text: 'Por favor completa todos los campos requeridos',
