@@ -34,6 +34,16 @@ export class MedicamentosComponent {
    medicamentoSelected:MedicamentoRs;
    fechaActual = new Date();
    isLoading = false;
+   //Tabla de Filtros del formulario
+   medicamentosFiltrados: MedicamentoRs[] = [];
+
+  filtros = {
+  id: '',
+  nombre: '',
+  presentacion: '',
+  cantidad: '',
+  fechaVencimiento: '',
+};
 
    //Contenedor de los campos del formulario
 
@@ -60,8 +70,9 @@ export class MedicamentosComponent {
  listarMedicamentos() {
   console.log('Entro a cargar medicamentos');
   this.medicamentoService.listarMedicamentos().subscribe({
-    next: (medicamentos: MedicamentoRs[]) => {
-      this.medicamentoList = medicamentos;
+    next: (data: MedicamentoRs[]) => {
+      this.medicamentoList = data;
+      this.medicamentosFiltrados= [...data]; 
     },
     error: (err) => console.error('Error al cargar medicamentos', err),
   });
@@ -230,6 +241,32 @@ openModal(modo: string) {
 trackById(index: number, item: any) { 
   return item.id; 
 }
+//Metodo para aplicar los filtros
+aplicarFiltros() {
+  const { id, nombre, presentacion, cantidad, fechaVencimiento } = this.filtros;
+
+  this.medicamentosFiltrados = this.medicamentoList.filter(m => {
+    const matchId = id ? m.id?.toString().includes(id) : true;
+    const matchNombre = nombre ? m.nombre?.toLowerCase().includes(nombre.toLowerCase()) : true;
+    const matchPresentacion = presentacion ? m.presentacion?.toLowerCase().includes(presentacion.toLowerCase()) : true;
+    const matchCantidad = cantidad ? m.cantidad?.toString().includes(cantidad) : true;
+    const matchFecha = fechaVencimiento ? (m.fechaVencimiento || '').includes(fechaVencimiento) : true;
+
+    return matchId && matchNombre && matchPresentacion && matchCantidad && matchFecha;
+  });
+}
+//Limpiar los filtros
+limpiarFiltros() {
+  this.filtros = {
+    id: '',
+    nombre: '',
+    presentacion: '',
+    cantidad: '',
+    fechaVencimiento: '',
+  };
+  this.medicamentosFiltrados = [...this.medicamentoList];
+}
+
 
 // Manejamos el envío del formulario
 onSubmit() {
