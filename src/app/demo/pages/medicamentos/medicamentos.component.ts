@@ -91,7 +91,7 @@ guardarMedicamento() {
 
     const formValue = this.form.value;
 
-    // 🔹 Mapear los datos con camelCase (como espera el backend)
+    //  Mapear los datos con camelCase (como espera el backend)
     const medicamentoData = {
       nombre: formValue.nombre,
       descripcion: formValue.descripcion,
@@ -132,7 +132,7 @@ guardarMedicamento() {
     });
   }
 }
-//actualizar medicamento
+
 // Actualizar medicamento
 actualizarMedicamento() {
   if (this.form.valid && this.medicamentoSelected?.id) {
@@ -194,7 +194,7 @@ inicializarFormulario() {
     fechaVencimiento: ['', [Validators.required]]
   });
 }
-//accder al formulario
+//acceder al formulario
 get f(): {[key: string]: AbstractControl} {
   return this.form.controls;
 }

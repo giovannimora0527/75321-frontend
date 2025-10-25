@@ -1,1 +1,164 @@
-<p>gestion-de-especializaciones works!</p>
+<div class="container-fluid py-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-success text-white border-0">
+        <div class="row align-items-center">
+          <div class="col-lg-8">
+            <h4 class="mb-1 fw-bold">
+              <i class="fa fa-stethoscope me-2"></i>
+              Gestión de Especializaciones
+            </h4>
+            <p class="mb-0 opacity-75">
+              <i class="fa fa-info-circle me-1"></i>
+              Administra las especializaciones médicas del sistema
+            </p>
+          </div>
+          <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <button class="btn btn-light btn-lg shadow-sm fw-semibold"
+                    (click)="abrirNuevaEspecializacion()">
+              <i class="fa fa-plus-circle me-2"></i>
+              Nueva Especialización
+            </button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Tabla de especializaciones -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-success">
+              <tr>
+                <th class="text-center" style="width: 8%;">#</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Código</th>
+                <th class="text-center" style="width: 12%;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="especializacionList.length > 0; else vacio">
+              <tr *ngFor="let e of especializacionList; trackBy: trackById" class="align-middle">
+                <td class="text-center">
+                  <span class="badge bg-secondary rounded-pill px-3 py-2 fw-semibold">
+                    {{ e.id }}
+                  </span>
+                </td>
+                <td class="fw-semibold">{{ e.nombre }}</td>
+                <td>{{ e.descripcion }}</td>
+                <td>
+                  <span class="badge bg-info text-dark">{{ e.codigoEspecializacion }}</span>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-outline-primary btn-sm shadow-sm"
+                          (click)="abrirEditarEspecializacion(e)"
+                          title="Editar especialización">
+                    <i class="fa fa-edit me-1"></i> Editar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <!-- Mensaje vacío -->
+          <ng-template #vacio>
+            <div class="p-5 text-center">
+              <i class="fa fa-user-md fa-3x text-muted opacity-50 mb-3"></i>
+              <h5 class="text-muted mb-2">No hay especializaciones registradas</h5>
+              <p class="text-muted mb-3">Comienza agregando la primera especialización</p>
+              <button class="btn btn-success btn-sm" (click)="abrirNuevaEspecializacion()">
+                <i class="fa fa-plus me-1"></i> Agregar Especialización
+              </button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+  
+      <!-- Pie con contador -->
+      <div class="card-footer bg-light border-0 py-3" *ngIf="especializacionList.length > 0">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <span class="text-muted">
+              <i class="fa fa-chart-bar me-1"></i>
+              Total: <strong>{{ especializacionList.length }}</strong>
+            </span>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <small class="text-muted">
+              <i class="fa fa-clock me-1"></i>
+              Última actualización: {{ fechaActual | date:'short' }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Spinner global -->
+  <div *ngIf="isLoading"
+       class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+       style="background-color: rgba(0,0,0,0.5); z-index: 9999;">
+    <div class="text-center text-white">
+      <div class="spinner-border text-light mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <h5>Procesando especialización...</h5>
+    </div>
+  </div>
+  
+  <!-- Modal para Especializaciones -->
+  <div class="modal fade" id="modalEspecializacion" tabindex="-1" aria-labelledby="modalEspecializacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-white"
+             [ngClass]="{'bg-success': modoFormulario === 'C', 'bg-primary': modoFormulario === 'E'}">
+          <h5 class="modal-title" id="modalEspecializacionLabel">
+            <i class="fa fa-stethoscope me-2"></i>
+            {{ titleModal }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+  
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nombre *</label>
+              <input type="text" class="form-control" formControlName="nombre"
+                     [class.is-invalid]="f['nombre'].invalid && f['nombre'].touched">
+              <div class="invalid-feedback" *ngIf="f['nombre'].invalid && f['nombre'].touched">
+                El nombre es requerido (mínimo 3 caracteres)
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label class="form-label">Descripción *</label>
+              <textarea class="form-control" rows="3" formControlName="descripcion"
+                        [class.is-invalid]="f['descripcion'].invalid && f['descripcion'].touched"></textarea>
+              <div class="invalid-feedback" *ngIf="f['descripcion'].invalid && f['descripcion'].touched">
+                La descripción es requerida (mínimo 5 caracteres)
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label class="form-label">Código Especialización *</label>
+              <input type="text" class="form-control" formControlName="codigoEspecializacion"
+                     [class.is-invalid]="f['codigoEspecializacion'].invalid && f['codigoEspecializacion'].touched">
+              <div class="invalid-feedback" *ngIf="f['codigoEspecializacion'].invalid && f['codigoEspecializacion'].touched">
+                El código es requerido (mínimo 3 caracteres)
+              </div>
+            </div>
+          </div>
+  
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModal()" [disabled]="isLoading">
+              <i class="fa fa-times me-1"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-success" [disabled]="form.invalid || isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <i *ngIf="!isLoading" class="fa fa-save me-1"></i>
+              {{ isLoading ? 'Guardando...' : titleBoton }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  

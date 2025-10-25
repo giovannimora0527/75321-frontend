@@ -13,7 +13,7 @@ export class MedicamentosService {
 
   constructor(private readonly backend:BackendService) { }
 
-  //Listar meidcamento service del backend no cambiar
+  //Listar medicamento service del backend no cambiar
   listarMedicamentos(): Observable<MedicamentoRs[]> {
     return this.backend.get<MedicamentoRs[]>(this.apiurl, this.endpoint, 'listar');
   }
