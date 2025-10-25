@@ -33,7 +33,7 @@ export const NavigationItems: NavigationItem[] = [
         id: 'medicamentos',
         title: 'Medicamentos',
         type: 'item',
-        url: '/medicamentos',
+        url: '/inicio/medicamentos',
         icon: 'feather icon-box',
         classes: 'nav-item'
       },
@@ -41,31 +41,31 @@ export const NavigationItems: NavigationItem[] = [
         id: 'citas',
         title: 'Citas',
         type: 'item',
-        url: '/citas',
+        url: '/inicio/citas',
         icon: 'feather icon-calendar',
         classes: 'nav-item'
       },
       {
-        id: 'formula-medica',
-        title: 'Fórmulas ',
+        id: 'formulas',
+        title: 'Fórmulas',
         type: 'item',
-        url: '/formula-medica',
+        url: '/inicio/formulas',
         icon: 'feather icon-file-text',
         classes: 'nav-item'
       },
       {
-        id: 'historia-medica',
+        id: 'historias',
         title: 'Historia Médica',
         type: 'item',
-        url: '/historia-medica',
+        url: '/inicio/historias',
         icon: 'feather icon-book',
         classes: 'nav-item'
       },
       {
-        id: 'gestion-especializacion',
+        id: 'especializaciones',
         title: 'Especializaciones',
         type: 'item',
-        url: '/gestion-especializacion',
+        url: '/inicio/especializaciones',
         icon: 'feather icon-layers',
         classes: 'nav-item'
       }
