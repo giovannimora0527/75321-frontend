@@ -35,6 +35,8 @@ export class GestionDeEspecializacionesComponent {
   fechaActual = new Date();
   isLoading = false;
   //luego si es necesario implementamos los filtros
+  
+
 
   // Contenedor de los campos del formulario
   form: FormGroup = new FormGroup({
@@ -63,6 +65,7 @@ listarEspecializaciones() {
   this.especializacionService.listarEspecializaciones().subscribe({
     next: (data: EspecializacionRs[]) => {
       this.especializacionList = data;
+    
       this.isLoading = false; // Apagamos el spinner
     },
     error: (err) => {
@@ -208,6 +211,8 @@ abrirEditarEspecializacion(especializacion: EspecializacionRs) {
   // Abre el modal en modo edición
   this.openModal('E');
 }
+
+
 
 // Método para abrir el modal
 openModal(modo: string) {
