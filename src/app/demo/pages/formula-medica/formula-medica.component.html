@@ -77,22 +77,22 @@
           <div class="row">
             <!-- Cita -->
             <div class="mb-3">
-              <label for="cita" class="form-label">Cita</label>
-              <select formControlName="citaId" id="cita" class="form-select">
+              <label for="citaId" class="form-label">Cita</label>
+              <select formControlName="citaId" id="citaId" class="form-select">
                 <option value="">Seleccione una cita</option>
                 <option *ngFor="let c of citasList" [ngValue]="c.id">
                   {{ c.paciente.nombres }} {{ c.paciente.apellidos }}
                 </option>
               </select>
-              <div *ngIf="form.get('cita')?.hasError('required') && form.get('cita')?.touched" class="text-danger">
+              <div *ngIf="form.get('cita')?.hasError('required') && form.get('citaId')?.touched" class="text-danger">
                 La cita es requerida.
               </div>
             </div>
 
             <!-- Medicamento -->
             <div class="mb-3">
-              <label for="medicamento" class="form-label">Medicamento</label>
-              <select formControlName="medicamentoId" id="medicamento" class="form-select">
+              <label for="medicamentoId" class="form-label">Medicamento</label>
+              <select formControlName="medicamentoId" id="medicamentoId" class="form-select">
                 <option value="">Seleccione un medicamento</option>
                 <option *ngFor="let m of medicamentosList" [ngValue]="m.id">
                   {{ m.nombre }}
