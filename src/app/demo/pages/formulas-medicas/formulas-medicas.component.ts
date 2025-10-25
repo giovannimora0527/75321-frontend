@@ -73,11 +73,11 @@ export class FormulasMedicasComponent {
     //Logica de guardar  formula con sweet Alert
     guardarFormula() {
       if (this.form.valid) {
-        this.isLoading = true; // ✅ Activar spinner
+        this.isLoading = true; //  Activar spinner
         
         const formValue = this.form.value;
     
-        // 🔹 Mapear con camel case
+        //  Mapear con camel case
         const formulaData = {
           citaId: this.form.value.citaid,
           medicamentoId: this.form.value.medicamentoid,
