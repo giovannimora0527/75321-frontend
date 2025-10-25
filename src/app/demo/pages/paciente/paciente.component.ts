@@ -2,6 +2,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import { PacienteService } from './service/paciente.service';
 import { Paciente } from './model/paciente';
 import { CommonModule } from '@angular/common';
+import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
 
 import {
   FormBuilder,
@@ -23,7 +24,7 @@ import { FilterPacientesPipe } from './pipes/filter-paciente.pipe';
 
 @Component({
   selector: 'app-paciente',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterPacientesPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterPacientesPipe,NgxSpinnerModule],
   templateUrl: './paciente.component.html',
   styleUrl: './paciente.component.scss'
 })
@@ -34,6 +35,7 @@ export class PacienteComponent implements AfterViewInit {
   titleBoton: string = '';
   pacienteList: Paciente[] = [];
   pacienteSelected: Paciente;
+  titleSpinner: string = 'Cargando...';
 
   form: FormGroup;
   paciente: Paciente;
@@ -42,7 +44,8 @@ export class PacienteComponent implements AfterViewInit {
 
   constructor(
     private readonly pacienteService: PacienteService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.form = this.formBuilder.group({
       tipoDocumento: ['', [Validators.required]],
@@ -55,6 +58,13 @@ export class PacienteComponent implements AfterViewInit {
       telefono: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(15)]],
     })
     this.listarPacientes();
+    this.spinner.show();
+
+    setTimeout(() => {
+      /** spinner ends after 5 seconds */
+      this.spinner.hide();
+    }, 5000);
+
   }
 
   tipoDocumentos: { valor: string, label: string }[] = [

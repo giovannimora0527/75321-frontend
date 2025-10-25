@@ -10,10 +10,11 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
 import { FilterCitasPipe } from './pipes/filter-cita.pipe';
+import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
 
 @Component({
   selector: 'app-citas',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterCitasPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterCitasPipe,NgxSpinnerModule],
   templateUrl: './cita.component.html',
   styleUrls: ['./cita.component.scss']
 })
@@ -26,6 +27,7 @@ export class CitaComponent implements OnInit {
   pacientesList: Paciente[] = [];
   medicosList: Medico[] = [];
   citaSelected: Cita | null = null;
+  titleSpinner: string = 'Cargando...';
 
   filtroColumna: string = '';
 
@@ -43,7 +45,8 @@ export class CitaComponent implements OnInit {
     private readonly citaService: CitaService,
     private readonly pacienteService: PacienteService,
     private readonly medicoService: MedicoService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService,
   ) {
     this.form = this.formBuilder.group({
       pacienteId: ['', Validators.required],
@@ -55,6 +58,13 @@ export class CitaComponent implements OnInit {
     });
 
     this.listarCitas();
+    this.spinner.show();
+
+    setTimeout(() => {
+      /** spinner ends after 5 seconds */
+      this.spinner.hide();
+    }, 5000);
+
   }
 
   listarCitas() {

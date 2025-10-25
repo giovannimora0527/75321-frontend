@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MedicamentoService } from './service/medicamento.service';
 import { Medicamento } from './model/medicamento';
 import { CommonModule } from '@angular/common';
+import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
 
 import {
   FormBuilder,
@@ -22,7 +23,7 @@ import { FilterMedicamentosPipe } from './pipes/filter-medicamento.pipe';
 
 @Component({
   selector: 'app-medicamentos',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterMedicamentosPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterMedicamentosPipe,NgxSpinnerModule],
   templateUrl: './medicamento.component.html',
   styleUrls: ['./medicamento.component.scss']
 })
@@ -33,6 +34,7 @@ export class MedicamentoComponent {
   titleBoton: string = '';
   medicamentosList: Medicamento[] = [];
   medicamentoSelected: Medicamento;
+  titleSpinner: string = 'Cargando...';
 
   /**
    * Formulario para crear/editar medicamento.
@@ -49,10 +51,18 @@ export class MedicamentoComponent {
 
   constructor(
     private readonly medicamentoService: MedicamentoService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService,
   ) {
     this.listarMedicamentos();
     this.inicializarFormulario();
+    this.spinner.show();
+
+    setTimeout(() => {
+      /** spinner ends after 5 seconds */
+      this.spinner.hide();
+    }, 5000);
+
   }
 
   inicializarFormulario() {
@@ -154,6 +164,8 @@ export class MedicamentoComponent {
       ...this.medicamentoSelected,
       ...this.form.value,
     };
+
+    console.log('Datos del medicamento a guardar/actualizar: ', medicamentoData);
 
     if (this.modoFormulario === 'C') {
       this.medicamentoService.guardarMedicamento(medicamentoData).subscribe({

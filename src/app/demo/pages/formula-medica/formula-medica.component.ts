@@ -9,10 +9,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Modal from 'bootstrap/js/dist/modal';
 import Swal from 'sweetalert2';
+import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
 
 @Component({
   selector: 'app-formula-medica',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './formula-medica.component.html',
   styleUrls: ['./formula-medica.component.scss']
 })
@@ -25,6 +26,8 @@ export class FormulaMedicaComponent implements OnInit {
   formulaMedicaSelected: FormulaMedica | null = null;
   citasList: Cita[] = [];
   medicamentosList: Medicamento[] = [];
+  titleSpinner: string = 'Cargando...';
+
 
   form: FormGroup;
 
@@ -40,7 +43,8 @@ export class FormulaMedicaComponent implements OnInit {
     private readonly formulaMedicaService: FormulaMedicaService,
     private readonly citaService: CitaService,
     private readonly medicamentoService: MedicamentoService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService,
   ) {
     this.form = this.formBuilder.group({
       citaId: ['', Validators.required],
@@ -50,6 +54,13 @@ export class FormulaMedicaComponent implements OnInit {
     })
 
     this.listarFormulasMedicas();
+    this.spinner.show();
+
+    setTimeout(() => {
+      /** spinner ends after 5 seconds */
+      this.spinner.hide();
+    }, 5000);
+
   }
 
   listarFormulasMedicas() {

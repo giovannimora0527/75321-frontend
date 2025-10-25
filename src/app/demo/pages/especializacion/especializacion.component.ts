@@ -7,11 +7,12 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import Modal from 'bootstrap/js/dist/modal';
 import Swal from 'sweetalert2';
 import { FilterEspecializacionesPipe } from './pipes/filter-especializaciones.pipe';
+import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
 
 @Component({
   selector: 'app-especializacion',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterEspecializacionesPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterEspecializacionesPipe,NgxSpinnerModule],
   templateUrl: './especializacion.component.html',
   styleUrls: ['./especializacion.component.scss']
 })
@@ -22,6 +23,7 @@ export class EspecializacionComponent {
   titleBoton = '';
   especializacionList: Especializacion[] = [];
   especializacionSelected: Especializacion | null = null;
+  titleSpinner: string = 'Cargando...';
 
   filtroColumna: string = '';
 
@@ -29,7 +31,8 @@ export class EspecializacionComponent {
 
   constructor(
     private readonly especializacionService: EspecializacionService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService,
   ) {
     this.form = this.formBuilder.group({
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
@@ -38,6 +41,13 @@ export class EspecializacionComponent {
     });
 
     this.listarEspecializaciones();
+    this.spinner.show();
+
+    setTimeout(() => {
+      /** spinner ends after 5 seconds */
+      this.spinner.hide();
+    }, 5000);
+
   }
 
   listarEspecializaciones() {
