@@ -69,12 +69,19 @@ export class MedicamentosComponent {
  //ListarMedicamentos
  listarMedicamentos() {
   console.log('Entro a cargar medicamentos');
+  // activamos el spinner
+  this.isLoading = true;
+
   this.medicamentoService.listarMedicamentos().subscribe({
     next: (data: MedicamentoRs[]) => {
       this.medicamentoList = data;
       this.medicamentosFiltrados= [...data]; 
+      this.isLoading = false;  //Apagamos el spinner
     },
-    error: (err) => console.error('Error al cargar medicamentos', err),
+    error: (err) => {
+      this.isLoading = false; // Apagamos spinner también si hay error
+      console.error('Error al cargar medicamentos', err);
+    },
   });
 }
 //Guardar medicamento con spinner y sweet alert
