@@ -20,7 +20,6 @@
         </div>
       </div>
     </div>
- <!-- Tabla con filtros -->
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
@@ -38,8 +37,7 @@
               <th>Dirección</th>
               <th>Acciones</th>
             </tr>
-            <!-- Fila de filtros -->
-            <tr class="bg-light">
+            <tr>
               <th>
                 <input 
                   type="text" 
@@ -50,7 +48,7 @@
               </th>
               <th>
                 <select 
-                  class="form-select form-select-sm" 
+                  class="form-control form-control-sm" 
                   [(ngModel)]="filtros.tipoDocumento"
                   (ngModelChange)="aplicarFiltros()">
                   <option value="">Todos</option>
@@ -93,7 +91,7 @@
               </th>
               <th>
                 <select 
-                  class="form-select form-select-sm" 
+                  class="form-control form-control-sm" 
                   [(ngModel)]="filtros.genero"
                   (ngModelChange)="aplicarFiltros()">
                   <option value="">Todos</option>
@@ -116,6 +114,9 @@
                   placeholder="Filtrar dirección"
                   [(ngModel)]="filtros.direccion"
                   (ngModelChange)="aplicarFiltros()">
+              </th>
+              <th>
+
               </th>
 
             </tr>
@@ -146,8 +147,7 @@
           </tbody>
         </table>
       </div>
-      
-      <!-- Información de resultados -->
+
       <div class="row mt-2">
         <div class="col-12">
           <small class="text-muted">
