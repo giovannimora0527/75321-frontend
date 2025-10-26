@@ -21,6 +21,9 @@ import { FormulaMedicasService } from './service/formula-medicas.service';
 //Importar otros servicios para manejar una logica interna
 import { Cita } from '../citas/model/cita';
 import { CitasService } from '../citas/service/citas.service';
+import { MedicamentoRs } from '../medicamentos/model/medicamentoRs';
+import { MedicamentosService } from '../medicamentos/service/medicamentos.service';
+
 
 @Component({
   selector: 'app-formulas-medicas',
@@ -38,9 +41,12 @@ export class FormulasMedicasComponent {
   formulaList: Formula[] = [];
   formulaSelected:Formula;
   fechaActual = new Date();
-  //Nuevas variables para manejar logica 
+  //Nuevas variables para manejar logica  de citas 
   citasList:Cita[]=[];
   isLoadingCitas=false;
+  //variables de para manejar los  medicamentos
+  medicamentosList: MedicamentoRs[] = [];
+
 
   //para poder usar el spinner
   isLoading = false;
@@ -62,12 +68,14 @@ export class FormulasMedicasComponent {
     constructor(
       private readonly formulaService: FormulaMedicasService,
       private readonly formBuilder: FormBuilder,
-      private readonly citasService: CitasService
+      private readonly citasService: CitasService,
+      private readonly medicamentoService: MedicamentosService
     ){
       this.ListarFormulas();
       this.inicializarFormulario();
-      //nuevas declaracion es
+      //nuevas declaracion para la logica interna del formulario
       this.cargarCitas();
+      this.listarMedicamentos();
     }
 
     //Logica De negocio
@@ -99,7 +107,7 @@ export class FormulasMedicasComponent {
     
         this.formulaService.CrearFormulas(formulaData).subscribe({
           next: (response) => {
-            this.isLoading = false; // ✅ Desactivar spinner
+            this.isLoading = false; // Desactivar spinner
             //  Alerta de éxito
             Swal.fire({
               title: '¡Éxito!',
@@ -119,7 +127,7 @@ export class FormulasMedicasComponent {
               icon: 'error',
               confirmButtonText: 'Aceptar'
             });
-            console.error('❌ Error al crear fórmula', err);
+            console.error(' Error al crear fórmula', err);
           }
         });
       } else {
@@ -181,7 +189,7 @@ export class FormulasMedicasComponent {
       }
     }
 
-      //logica interna
+      //logica interna del formulario de los select
     
       cargarCitas() {
         console.log(' Cargando citas recientes...');
@@ -205,6 +213,19 @@ export class FormulasMedicasComponent {
           }
         });
       }
+
+      //Listar Medicamnetos dentro del selected
+      listarMedicamentos() {
+        this.medicamentoService.listarMedicamentos().subscribe({
+          next: (data: MedicamentoRs[]) => {
+            this.medicamentosList = data;
+          },
+          error: (err) => {
+            console.error('Error al listar medicamentos', err);
+          }
+        });
+      }
+      
       
 
 

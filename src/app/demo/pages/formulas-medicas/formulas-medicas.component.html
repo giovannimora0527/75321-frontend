@@ -149,13 +149,21 @@
             </div>
             
             <div class="col-md-6 mb-3">
-              <label class="form-label">ID Medicamento *</label>
-              <input type="number" class="form-control" formControlName="medicamentoid"
-                     [class.is-invalid]="f['medicamentoid'].invalid && f['medicamentoid'].touched">
+              <label class="form-label">Medicamento *</label>
+              <select class="form-select"
+                      formControlName="medicamentoid"
+                      [class.is-invalid]="f['medicamentoid'].invalid && f['medicamentoid'].touched">
+                <option value="">Seleccione un medicamento</option>
+                <option *ngFor="let m of medicamentosList" [value]="m.id">
+                  {{ m.id }} — {{ m.nombre }} — {{ m.presentacion }}
+                </option>
+              </select>
+              
               <div class="invalid-feedback" *ngIf="f['medicamentoid'].invalid && f['medicamentoid'].touched">
-                ID de medicamento es requerido
+                Debe seleccionar un medicamento válido.
               </div>
             </div>
+            
           </div>
           
           <div class="mb-3">
