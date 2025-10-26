@@ -166,14 +166,7 @@
             
           </div>
           
-          <div class="mb-3">
-            <label class="form-label">Nombre del Medicamento *</label>
-            <input type="text" class="form-control" formControlName="medicamentoNombre"
-                   [class.is-invalid]="f['medicamentoNombre'].invalid && f['medicamentoNombre'].touched">
-            <div class="invalid-feedback" *ngIf="f['medicamentoNombre'].invalid && f['medicamentoNombre'].touched">
-              Nombre del medicamento es requerido (mínimo 2 caracteres)
-            </div>
-          </div>
+          
           
           <div class="mb-3">
             <label class="form-label">Dosis *</label>

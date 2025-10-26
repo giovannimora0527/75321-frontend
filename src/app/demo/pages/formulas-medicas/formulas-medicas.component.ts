@@ -58,7 +58,7 @@ export class FormulasMedicasComponent {
       //Crear un campo Vacio
       citaid:new FormControl(''),
       medicamentoid:new FormControl(''),
-      medicamentoNombre:new FormControl(''),
+      //medicamentoNombre:new FormControl(''),
       dosis:new FormControl(''),
       indicaciones:new FormControl(''),
       fechaCreacionRegistro:new FormControl(''),
@@ -236,7 +236,7 @@ export class FormulasMedicasComponent {
       this.form = this.formBuilder.group({
         citaid: ['', [Validators.required]],
         medicamentoid: ['', [Validators.required]],
-        medicamentoNombre: ['', [Validators.required, Validators.minLength(2)]],
+        //medicamentoNombre: ['', [Validators.required, Validators.minLength(2)]],
         dosis: ['', [Validators.required, Validators.minLength(2)]],
         indicaciones: ['', [Validators.required, Validators.minLength(5)]],
         fechaCreacionRegistro: ['', [Validators.required]]
