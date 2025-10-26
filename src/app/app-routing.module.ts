@@ -1,3 +1,4 @@
+import { RecetaComponent } from './demo/pages/receta/receta.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
@@ -9,24 +10,29 @@ import { CitaComponent } from './demo/pages/Citas/citas.component';
 import { FormulaComponent } from './demo/pages/Formulas-Medicas/formula.component';
 import { EspecializacionComponent } from './demo/pages/Especializacion/especializacion.component';
 
+
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'inicio',
     pathMatch: 'full'
-  },  
+  },
   {
     path: 'inicio',
     component: AdminComponent,
     data: { title: 'Inicio' },
-    children: [      
+    children: [
        { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
        { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
-       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }}, 
-       { path: 'Medicamentos', component: MedicamentoComponent, data: { title: 'Medicamento' }}, 
-       { path: 'Citas', component: CitaComponent, data: { title: 'Cita' }}, 
+       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
+       { path: 'Medicamentos', component: MedicamentoComponent, data: { title: 'Medicamento' }},
+       { path: 'Citas', component: CitaComponent, data: { title: 'Cita' }},
        { path: 'Formulas-Medicas', component: FormulaComponent, data: { title: 'Formula' }} ,
        { path: 'Especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
+       { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
+       { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamentos' }},
+       { path: 'receta', component: RecetaComponent, data: { title: 'Receta' }},
+       { path: 'Cita', component: RecetaComponent, data: { title: 'Cita' }}
     ]
   },
   { path: '**', redirectTo: 'inicio' }
