@@ -18,6 +18,10 @@ import { CommonModule } from '@angular/common';
 import { Formula } from './model/formula';
 import { FormulaMedicasService } from './service/formula-medicas.service';
 
+//Importar otros servicios para manejar una logica interna
+import { Cita } from '../citas/model/cita';
+import { CitasService } from '../citas/service/citas.service';
+
 @Component({
   selector: 'app-formulas-medicas',
   imports: [CommonModule,FormsModule,ReactiveFormsModule],
@@ -34,6 +38,11 @@ export class FormulasMedicasComponent {
   formulaList: Formula[] = [];
   formulaSelected:Formula;
   fechaActual = new Date();
+  //Nuevas variables para manejar logica 
+  citasList:Cita[]=[];
+  isLoadingCitas=false;
+
+  //para poder usar el spinner
   isLoading = false;
 
     //Contenedor de los campos del formulario
@@ -52,10 +61,13 @@ export class FormulasMedicasComponent {
 
     constructor(
       private readonly formulaService: FormulaMedicasService,
-      private readonly formBuilder: FormBuilder
+      private readonly formBuilder: FormBuilder,
+      private readonly citasService: CitasService
     ){
       this.ListarFormulas();
       this.inicializarFormulario();
+      //nuevas declaracion es
+      this.cargarCitas();
     }
 
     //Logica De negocio
@@ -168,8 +180,32 @@ export class FormulasMedicasComponent {
         });
       }
     }
-    
 
+      //logica interna
+    
+      cargarCitas() {
+        console.log(' Cargando citas recientes...');
+        this.isLoadingCitas = true;
+      
+        this.citasService.listarCitas().subscribe({
+          next: (data: Cita[]) => {
+            this.citasList = data ?? [];
+            this.isLoadingCitas = false;
+            console.log(' Citas cargadas:', this.citasList);
+          },
+          error: (err) => {
+            this.isLoadingCitas = false;
+            console.error(' Error al cargar citas:', err);
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudieron cargar las citas recientes.',
+              icon: 'error',
+              confirmButtonText: 'Aceptar'
+            });
+          }
+        });
+      }
+      
 
 
 

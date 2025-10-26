@@ -133,11 +133,18 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">ID Cita *</label>
-              <input type="number" class="form-control" formControlName="citaid" 
-                     [class.is-invalid]="f['citaid'].invalid && f['citaid'].touched">
+              <label class="form-label">Cita *</label>
+              <select class="form-select"
+                      formControlName="citaid"
+                      [class.is-invalid]="f['citaid'].invalid && f['citaid'].touched">
+                <option value="">Seleccione una cita</option>
+                <option *ngFor="let c of citasList" [value]="c.id">
+                  {{ c.id }} — {{ c.pacienteNombre }} — {{ c.fechaHora | date:'short' }}
+                </option>
+              </select>
+              
               <div class="invalid-feedback" *ngIf="f['citaid'].invalid && f['citaid'].touched">
-                ID de cita es requerido
+                Debe seleccionar una cita válida.
               </div>
             </div>
             
