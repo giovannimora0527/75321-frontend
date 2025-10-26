@@ -27,16 +27,13 @@ export class PacienteComponent {
   titleModal: string = '';
   titleBoton: string = '';
   
-  // Lista original de pacientes (sin modificar)
   pacienteList: Paciente[] = [];
   
-  // Lista filtrada que se muestra en la tabla
   pacienteListFiltrada: Paciente[] = [];
   
   pacienteSelected: Paciente;
   titleSpinner: string = 'Cargando...';
 
-  // Objeto que contiene todos los filtros
   filtros = {
     id: '',
     tipoDocumento: '',

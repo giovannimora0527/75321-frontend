@@ -6,6 +6,5 @@ export class Medicamento {
   fechaCompra!: Date;
   fechaVence!: Date;
   fechaCreacionRegistro!: Date;
-  fechaModificacionRegistro!: Date;
+  fechaModificacionRegistro?: Date; 
 }
-
