@@ -26,13 +26,17 @@ export class FormulaComponent implements AfterViewInit {
   modoFormulario: string = '';
   titleModal: string = '';
   titleBoton: string = '';
-
+  
+  // Lista original de fórmulas médicas (sin modificar)
   formulaList: Formula[] = [];
+  
+  // Lista filtrada que se muestra en la tabla
   formulaListFiltrada: Formula[] = [];
   
   formulaSelected: Formula;
   titleSpinner: string = 'Cargando...';
-
+  
+  // Objeto que contiene todos los filtros
   filtros = {
     id: '',
     citaId: '',
@@ -82,6 +86,7 @@ export class FormulaComponent implements AfterViewInit {
       next: (data) => {
         this.spinner.hide();
         this.formulaList = data;
+        // Inicializar la lista filtrada con todas las fórmulas
         this.formulaListFiltrada = [...this.formulaList];
       },
       error: (error) => {
@@ -91,6 +96,10 @@ export class FormulaComponent implements AfterViewInit {
     });
   }
   
+  /**
+   * Aplica los filtros a la lista de fórmulas médicas
+   * Se ejecuta cada vez que cambia un valor en los inputs de filtro
+   */
   aplicarFiltros() {
     this.formulaListFiltrada = this.formulaList.filter(formula => {
       // Filtro por ID

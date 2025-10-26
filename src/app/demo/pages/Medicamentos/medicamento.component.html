@@ -1,29 +1,33 @@
-<ngx-spinner type="pacman" size="medium" color="#F5F2F2">
-  <p style="color:#fff">{{titleSpinner}}</p>
+<ngx-spinner [fullScreen]="true" type="ball-scale-multiple" size="medium">
+  <p class="loading">{{titleSpinner}}</p>
 </ngx-spinner>
 
-<div class="container">
-  <div class="card">
-    <div class="card-header">
-      <div class="row align-items-center">
-        <div class="col-lg-7">
-          <h3 class="mb-0">
-            <i class="fa fa-pills"></i>
-            &nbsp;Lista de Medicamentos
-          </h3>
-          <small>Estos son los medicamentos registrados en el sistema.</small>
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <!-- Reorganizado el header con iconos y mejor estructura -->
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1">
+            <i class="feather icon-package"></i> Lista de Medicamentos
+          </h5>
+          <span class="d-block text-muted">
+            Estos son los medicamentos registrados en el sistema.
+          </span>
         </div>
-        <div class="col-lg-5 text-end">
-          <button class="btn btn-outline-primary" (click)="abrirNuevoMedicamento()">
-            Nuevo Medicamento
+        <div>
+          <!-- Cambiados botones a btn-outline-primary -->
+          <button type="button" class="btn btn-outline-primary" (click)="abrirNuevoMedicamento()">
+            <i class="feather icon-plus"></i> Nuevo Medicamento
+          </button>
+          <button type="button" class="btn btn-outline-secondary ms-2" (click)="limpiarFiltros()">
+            <i class="feather icon-x"></i> Limpiar Filtros
           </button>
         </div>
       </div>
-    </div>
-    
-    <div class="row">
       <div class="card-body">
         <div class="table-responsive">
+          <!-- Cambiada tabla a table-striped table-hover y agregado table-dark al thead -->
           <table class="table table-striped table-hover">
             <thead class="table-dark">
               <tr>
@@ -37,6 +41,7 @@
                 <th>Fecha de Modificación</th>
                 <th>Acciones</th>
               </tr>
+              <!-- Fila de filtros sin bg-light -->
               <tr>
                 <th>
                   <input 
@@ -112,27 +117,32 @@
                 <td>{{ medicamento.fechaCreacionRegistro | date: 'yyyy-MM-dd HH:mm' }}</td>
                 <td>{{ medicamento.fechaModificacionRegistro ? (medicamento.fechaModificacionRegistro | date: 'yyyy-MM-dd HH:mm') : '-' }}</td>
                 <td>
-                  <button class="btn btn-outline-primary" (click)="abrirEditarMedicamento(medicamento)">
-                    <i class="fa fa-edit"></i> Editar
+                  <!-- Cambiado botón a btn-outline-primary -->
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-outline-primary"
+                    (click)="abrirEditarMedicamento(medicamento)">
+                    <i class="feather icon-edit"></i> Editar
                   </button>
                 </td>
               </tr>
-              <tr *ngIf="medicamentoListFiltrada.length === 0">
+              <tr *ngIf="medicamentoListFiltrada.length === 0 && medicamentoList.length === 0">
                 <td colspan="9" class="text-center">
-                  <span *ngIf="medicamentoList.length === 0">No hay medicamentos disponibles.</span>
-                  <span *ngIf="medicamentoList.length > 0">No se encontraron medicamentos con los filtros aplicados.</span>
+                  No hay medicamentos disponibles.
+                </td>
+              </tr>
+              <tr *ngIf="medicamentoListFiltrada.length === 0 && medicamentoList.length > 0">
+                <td colspan="9" class="text-center">
+                  No se encontraron medicamentos con los filtros aplicados.
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        
-        <div class="row mt-2">
-          <div class="col-12">
-            <small class="text-muted">
-              Mostrando {{ medicamentoListFiltrada.length }} de {{ medicamentoList.length }} medicamentos
-            </small>
-          </div>
+        <div class="mt-3">
+          <small class="text-muted">
+            Mostrando {{ medicamentoListFiltrada.length }} de {{ medicamentoList.length }} medicamentos
+          </small>
         </div>
       </div>
     </div>
@@ -150,89 +160,105 @@
       <div class="modal-body">
         <form [formGroup]="form">
           <div class="row">
-            <div class="col-md-12 mb-3">
-              <label for="nombre" class="form-label">Nombre *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="nombre" 
-                formControlName="nombre"
-                [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid">
-              <div class="invalid-feedback" *ngIf="f['nombre'].touched && f['nombre'].invalid">
-                <span *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio</span>
-                <span *ngIf="f['nombre'].errors?.['minlength']">Mínimo 2 caracteres</span>
-                <span *ngIf="f['nombre'].errors?.['maxlength']">Máximo 100 caracteres</span>
+            <!-- Nombre -->
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="nombre" 
+                  formControlName="nombre"
+                  [class.is-invalid]="f['nombre'].touched && f['nombre'].invalid">
+                <div class="invalid-feedback">
+                  <small *ngIf="f['nombre'].errors?.['required']">El nombre es obligatorio</small>
+                  <small *ngIf="f['nombre'].errors?.['minlength']">Mínimo 2 caracteres</small>
+                  <small *ngIf="f['nombre'].errors?.['maxlength']">Máximo 100 caracteres</small>
+                </div>
               </div>
             </div>
           </div>
           
           <div class="row">
-            <div class="col-md-12 mb-3">
-              <label for="descripcion" class="form-label">Descripción *</label>
-              <textarea 
-                class="form-control" 
-                id="descripcion" 
-                formControlName="descripcion"
-                rows="3"
-                [class.is-invalid]="f['descripcion'].touched && f['descripcion'].invalid"></textarea>
-              <div class="invalid-feedback" *ngIf="f['descripcion'].touched && f['descripcion'].invalid">
-                <span *ngIf="f['descripcion'].errors?.['required']">La descripción es obligatoria</span>
-                <span *ngIf="f['descripcion'].errors?.['minlength']">Mínimo 5 caracteres</span>
-                <span *ngIf="f['descripcion'].errors?.['maxlength']">Máximo 500 caracteres</span>
+            <!-- Descripción -->
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción *</label>
+                <textarea 
+                  class="form-control" 
+                  id="descripcion" 
+                  formControlName="descripcion"
+                  rows="3"
+                  [class.is-invalid]="f['descripcion'].touched && f['descripcion'].invalid"></textarea>
+                <div class="invalid-feedback">
+                  <small *ngIf="f['descripcion'].errors?.['required']">La descripción es obligatoria</small>
+                  <small *ngIf="f['descripcion'].errors?.['minlength']">Mínimo 5 caracteres</small>
+                  <small *ngIf="f['descripcion'].errors?.['maxlength']">Máximo 500 caracteres</small>
+                </div>
               </div>
             </div>
           </div>
           
           <div class="row">
-            <div class="col-md-12 mb-3">
-              <label for="presentacion" class="form-label">Presentación *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="presentacion" 
-                formControlName="presentacion"
-                placeholder="Ej: Tabletas, Cápsulas, Jarabe, etc."
-                [class.is-invalid]="f['presentacion'].touched && f['presentacion'].invalid">
-              <div class="invalid-feedback" *ngIf="f['presentacion'].touched && f['presentacion'].invalid">
-                <span *ngIf="f['presentacion'].errors?.['required']">La presentación es obligatoria</span>
-                <span *ngIf="f['presentacion'].errors?.['minlength']">Mínimo 2 caracteres</span>
-                <span *ngIf="f['presentacion'].errors?.['maxlength']">Máximo 100 caracteres</span>
+            <!-- Presentación -->
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="presentacion" class="form-label">Presentación *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="presentacion" 
+                  formControlName="presentacion"
+                  placeholder="Ej: Tabletas, Cápsulas, Jarabe, etc."
+                  [class.is-invalid]="f['presentacion'].touched && f['presentacion'].invalid">
+                <div class="invalid-feedback">
+                  <small *ngIf="f['presentacion'].errors?.['required']">La presentación es obligatoria</small>
+                  <small *ngIf="f['presentacion'].errors?.['minlength']">Mínimo 2 caracteres</small>
+                  <small *ngIf="f['presentacion'].errors?.['maxlength']">Máximo 100 caracteres</small>
+                </div>
               </div>
             </div>
           </div>
           
           <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="fechaCompra" class="form-label">Fecha de Compra *</label>
-              <input 
-                type="date" 
-                class="form-control" 
-                id="fechaCompra" 
-                formControlName="fechaCompra"
-                [class.is-invalid]="f['fechaCompra'].touched && f['fechaCompra'].invalid">
-              <div class="invalid-feedback" *ngIf="f['fechaCompra'].touched && f['fechaCompra'].invalid">
-                <span *ngIf="f['fechaCompra'].errors?.['required']">La fecha de compra es obligatoria</span>
+            <!-- Fecha de Compra -->
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="fechaCompra" class="form-label">Fecha de Compra *</label>
+                <input 
+                  type="date" 
+                  class="form-control" 
+                  id="fechaCompra" 
+                  formControlName="fechaCompra"
+                  [class.is-invalid]="f['fechaCompra'].touched && f['fechaCompra'].invalid">
+                <div class="invalid-feedback">
+                  <small *ngIf="f['fechaCompra'].errors?.['required']">La fecha de compra es obligatoria</small>
+                </div>
               </div>
             </div>
             
-            <div class="col-md-6 mb-3">
-              <label for="fechaVence" class="form-label">Fecha de Vencimiento *</label>
-              <input 
-                type="date" 
-                class="form-control" 
-                id="fechaVence" 
-                formControlName="fechaVence"
-                [class.is-invalid]="f['fechaVence'].touched && f['fechaVence'].invalid">
-              <div class="invalid-feedback" *ngIf="f['fechaVence'].touched && f['fechaVence'].invalid">
-                <span *ngIf="f['fechaVence'].errors?.['required']">La fecha de vencimiento es obligatoria</span>
+            <!-- Fecha de Vencimiento -->
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="fechaVence" class="form-label">Fecha de Vencimiento *</label>
+                <input 
+                  type="date" 
+                  class="form-control" 
+                  id="fechaVence" 
+                  formControlName="fechaVence"
+                  [class.is-invalid]="f['fechaVence'].touched && f['fechaVence'].invalid">
+                <div class="invalid-feedback">
+                  <small *ngIf="f['fechaVence'].errors?.['required']">La fecha de vencimiento es obligatoria</small>
+                </div>
               </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="guardarMedicamento()">{{ titleBoton }}</button>
+        <!-- Cambiados botones del modal a btn-outline -->
+        <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn btn-outline-primary" (click)="guardarMedicamento()">{{ titleBoton }}</button>
       </div>
     </div>
   </div>

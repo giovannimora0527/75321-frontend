@@ -27,13 +27,16 @@ export class MedicamentoComponent implements AfterViewInit {
   titleModal: string = '';
   titleBoton: string = '';
   
+  // Lista original de medicamentos (sin modificar)
   medicamentoList: Medicamento[] = [];
   
+  // Lista filtrada que se muestra en la tabla
   medicamentoListFiltrada: Medicamento[] = [];
   
   medicamentoSelected: Medicamento;
   titleSpinner: string = 'Cargando...';
   
+  // Objeto que contiene todos los filtros
   filtros = {
     id: '',
     nombre: '',
@@ -87,6 +90,7 @@ export class MedicamentoComponent implements AfterViewInit {
       next: (data) => {
         this.spinner.hide();
         this.medicamentoList = data;
+        // Inicializar la lista filtrada con todos los medicamentos
         this.medicamentoListFiltrada = [...this.medicamentoList];
       },
       error: (error) => {
@@ -96,6 +100,10 @@ export class MedicamentoComponent implements AfterViewInit {
     });
   }
   
+  /**
+   * Aplica los filtros a la lista de medicamentos
+   * Se ejecuta cada vez que cambia un valor en los inputs de filtro
+   */
   aplicarFiltros() {
     this.medicamentoListFiltrada = this.medicamentoList.filter(medicamento => {
       // Filtro por ID

@@ -20,6 +20,7 @@
         </div>
       </div>
     </div>
+ <!-- Tabla con filtros -->
   <div class="row">
     <div class="card-body">
       <div class="table-responsive">
@@ -37,18 +38,19 @@
               <th>Dirección</th>
               <th>Acciones</th>
             </tr>
+            <!-- Fila de filtros -->
             <tr>
               <th>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
                   placeholder="Filtrar ID"
                   [(ngModel)]="filtros.id"
                   (ngModelChange)="aplicarFiltros()">
               </th>
               <th>
-                <select
-                  class="form-control form-control-sm"
+                <select 
+                  class="form-control form-control-sm" 
                   [(ngModel)]="filtros.tipoDocumento"
                   (ngModelChange)="aplicarFiltros()">
                   <option value="">Todos</option>
@@ -59,39 +61,39 @@
                 </select>
               </th>
               <th>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
                   placeholder="Filtrar documento"
                   [(ngModel)]="filtros.numeroDocumento"
                   (ngModelChange)="aplicarFiltros()">
               </th>
               <th>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
                   placeholder="Filtrar nombres"
                   [(ngModel)]="filtros.nombres"
                   (ngModelChange)="aplicarFiltros()">
               </th>
               <th>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
                   placeholder="Filtrar apellidos"
                   [(ngModel)]="filtros.apellidos"
                   (ngModelChange)="aplicarFiltros()">
               </th>
               <th>
-                <input
-                  type="date"
+                <input 
+                  type="date" 
                   class="form-control form-control-sm"
                   [(ngModel)]="filtros.fechaNacimiento"
                   (ngModelChange)="aplicarFiltros()">
               </th>
               <th>
-                <select
-                  class="form-control form-control-sm"
+                <select 
+                  class="form-control form-control-sm" 
                   [(ngModel)]="filtros.genero"
                   (ngModelChange)="aplicarFiltros()">
                   <option value="">Todos</option>
@@ -100,17 +102,17 @@
                 </select>
               </th>
               <th>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
                   placeholder="Filtrar teléfono"
                   [(ngModel)]="filtros.telefono"
                   (ngModelChange)="aplicarFiltros()">
               </th>
               <th>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
                   placeholder="Filtrar dirección"
                   [(ngModel)]="filtros.direccion"
                   (ngModelChange)="aplicarFiltros()">
@@ -147,7 +149,8 @@
           </tbody>
         </table>
       </div>
-
+      
+      <!-- Información de resultados -->
       <div class="row mt-2">
         <div class="col-12">
           <small class="text-muted">
@@ -172,7 +175,7 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="tipoDocumento" class="form-label">Tipo Documento *</label>
-              <select class="form-control" [class.is-invalid]="f['tipoDocumento'].invalid && f['tipoDocumento'].touched"
+              <select class="form-control" [class.is-invalid]="f['tipoDocumento'].invalid && f['tipoDocumento'].touched" 
                       id="tipoDocumento" formControlName="tipoDocumento">
                 <option value="">Seleccione...</option>
                 <option value="CC">Cédula de Ciudadanía</option>

@@ -1,34 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, AfterViewInit } from '@angular/core';
 import { EspecializacionService } from './service/especializacion.service';
 import { Especializacion } from './models/especializacion';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
-import Modal from 'bootstrap/js/dist/modal';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 @Component({
   selector: 'app-especializacion',
-  imports: [CommonModule, FormsModule, NgxSpinnerModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './especializacion.component.html',
   styleUrl: './especializacion.component.scss'
 })
 export class EspecializacionComponent implements AfterViewInit {
   especializacionList: Especializacion[] = [];
-  especializacionListFiltrada: Especializacion[] = [];
   especializacionSeleccionada: Especializacion | null = null;
-  
-  modalCrearInstance: Modal | null = null;
-  modalEditarInstance: Modal | null = null;
-  titleSpinner: string = 'Cargando...';
+  modoEdicion: boolean = false;
 
-  filtros = {
-    id: '',
-    codigoEspecializacion: '',
-    nombre: '',
-    descripcion: ''
-  };
-
+  // Formulario
   nuevaEspecializacion: Especializacion = {
     id: 0,
     nombre: '',
@@ -36,10 +26,7 @@ export class EspecializacionComponent implements AfterViewInit {
     codigoEspecializacion: ''
   };
 
-  constructor(
-    private readonly especializacionService: EspecializacionService,
-    private readonly spinner: NgxSpinnerService 
-  ) {
+  constructor(private readonly especializacionService: EspecializacionService) {
     this.listarEspecializaciones();
   }
 
@@ -48,144 +35,116 @@ export class EspecializacionComponent implements AfterViewInit {
   }
 
   listarEspecializaciones() {
-    this.spinner.show(); 
     this.especializacionService.listarEspecializaciones().subscribe({
       next: (data) => {
-        this.spinner.hide(); 
         console.log(data);
         this.especializacionList = data;
-        this.especializacionListFiltrada = [...this.especializacionList];
         setTimeout(() => this.initializeTooltips(), 0);
       },
       error: (error) => {
-        this.spinner.hide(); 
         console.error('Error fetching especializaciones:', error);
       }
     });
   }
 
-  /**
-   * Aplica los filtros a la lista de especializaciones
-   */
-  aplicarFiltros() {
-    this.especializacionListFiltrada = this.especializacionList.filter((esp) => {
-      const cumpleId = !this.filtros.id || esp.id.toString().includes(this.filtros.id);
-      const cumpleCodigo = !this.filtros.codigoEspecializacion || 
-        esp.codigoEspecializacion.toLowerCase().includes(this.filtros.codigoEspecializacion.toLowerCase());
-      const cumpleNombre = !this.filtros.nombre || 
-        esp.nombre.toLowerCase().includes(this.filtros.nombre.toLowerCase());
-      const cumpleDescripcion = !this.filtros.descripcion || 
-        (esp.descripcion && esp.descripcion.toLowerCase().includes(this.filtros.descripcion.toLowerCase()));
-      
-      return cumpleId && cumpleCodigo && cumpleNombre && cumpleDescripcion;
-    });
-  }
-
-  /**
-   * Limpia todos los filtros
-   */
-  limpiarFiltros() {
-    this.filtros = {
-      id: '',
-      codigoEspecializacion: '',
-      nombre: '',
-      descripcion: ''
-    };
-    this.especializacionListFiltrada = [...this.especializacionList];
-  }
-
-  abrirModalCrear() {
-    this.limpiarFormulario();
-    const modalElement = document.getElementById('modalCrear');
-    if (modalElement) {
-      this.modalCrearInstance ??= new Modal(modalElement);
-      this.modalCrearInstance.show();
-    }
-  }
-
   crearEspecializacion() {
-    this.spinner.show(); 
     this.especializacionService.crear(this.nuevaEspecializacion).subscribe({
       next: (data) => {
-        this.spinner.hide(); 
         console.log('Especialización creada:', data);
         this.listarEspecializaciones();
         this.limpiarFormulario();
-        this.closeModal('modalCrear');
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Éxito',
-          text: 'La especialización se ha creado con éxito.',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#0d6efd'
-        });
+
+        // PRIMERO cerrar el modal
+        this.cerrarModal('modalCrear');
+
+        // LUEGO limpiar todos los backdrops
+        this.limpiarBackdrops();
+
+        // FINALMENTE mostrar el SweetAlert
+        setTimeout(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'La especialización se ha creado con éxito.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#0d6efd'
+          });
+        }, 300);
       },
       error: (error) => {
-        this.spinner.hide(); 
         console.error('Error creando especialización:', error);
         const mensaje = error.error?.message || error.message || 'Error desconocido';
-        this.closeModal('modalCrear');
-        
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: `Error al crear la especialización: ${mensaje}`,
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#dc3545'
-        });
+
+        // Cerrar modal y limpiar backdrop
+        this.cerrarModal('modalCrear');
+        this.limpiarBackdrops();
+
+        setTimeout(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: `Error al crear la especialización: ${mensaje}`,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#dc3545'
+          });
+        }, 300);
       }
     });
   }
 
   seleccionarParaEditar(especializacion: Especializacion) {
     this.especializacionSeleccionada = { ...especializacion };
-    
-    // Abrir el modal de editar
-    const modalElement = document.getElementById('modalEditar');
-    if (modalElement) {
-      this.modalEditarInstance ??= new Modal(modalElement);
-      this.modalEditarInstance.show();
-    }
+    this.modoEdicion = true;
   }
 
   actualizarEspecializacion() {
-    if (!this.especializacionSeleccionada) return;
-    
-    this.spinner.show(); 
-    this.especializacionService
-      .actualizar(this.especializacionSeleccionada.id, this.especializacionSeleccionada)
-      .subscribe({
-        next: (data) => {
-          this.spinner.hide(); 
-          console.log('Especialización actualizada:', data);
-          this.listarEspecializaciones();
-          this.especializacionSeleccionada = null;
-          this.closeModal('modalEditar');
-          
-          Swal.fire({
-            icon: 'success',
-            title: 'Éxito',
-            text: 'La especialización se ha actualizado con éxito.',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#0d6efd'
-          });
-        },
-        error: (error) => {
-          this.spinner.hide(); 
-          console.error('Error actualizando especialización:', error);
-          const mensaje = error.error?.message || error.message || 'Error desconocido';
-          this.closeModal('modalEditar');
-          
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: `Error al actualizar la especialización: ${mensaje}`,
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#dc3545'
-          });
-        }
-      });
+    if (this.especializacionSeleccionada) {
+      this.especializacionService
+        .actualizar(this.especializacionSeleccionada.id, this.especializacionSeleccionada)
+        .subscribe({
+          next: (data) => {
+            console.log('Especialización actualizada:', data);
+            this.listarEspecializaciones();
+            this.modoEdicion = false;
+            this.especializacionSeleccionada = null;
+
+            // PRIMERO cerrar el modal
+            this.cerrarModal('modalEditar');
+
+            // LUEGO limpiar todos los backdrops
+            this.limpiarBackdrops();
+
+            // FINALMENTE mostrar el SweetAlert
+            setTimeout(() => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: 'La especialización se ha actualizado con éxito.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#0d6efd'
+              });
+            }, 300);
+          },
+          error: (error) => {
+            console.error('Error actualizando especialización:', error);
+            const mensaje = error.error?.message || error.message || 'Error desconocido';
+
+            // Cerrar modal y limpiar backdrop
+            this.cerrarModal('modalEditar');
+            this.limpiarBackdrops();
+
+            setTimeout(() => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Error al actualizar la especialización: ${mensaje}`,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+              });
+            }, 300);
+          }
+        });
+    }
   }
 
   limpiarFormulario() {
@@ -197,27 +156,54 @@ export class EspecializacionComponent implements AfterViewInit {
     };
   }
 
-  closeModal(modalId: string) {
+  cerrarModal(modalId: string) {
     const modalElement = document.getElementById(modalId);
     if (modalElement) {
-      const modalInstance = modalId === 'modalCrear' ? this.modalCrearInstance : this.modalEditarInstance;
-      if (modalInstance) {
-        modalInstance.hide();
+      const bootstrapGlobal = (window as any).bootstrap;
+      if (bootstrapGlobal) {
+        const modal = bootstrapGlobal.Modal.getInstance(modalElement);
+        if (modal) {
+          modal.hide();
+        }
       }
     }
-    
-    // Limpiar especializacionSeleccionada si es el modal de editar
-    if (modalId === 'modalEditar') {
-      this.especializacionSeleccionada = null;
-    }
+  }
+
+  /**
+   * Limpia TODOS los backdrops y estilos de modales
+   */
+  limpiarBackdrops() {
+    // Eliminar TODOS los backdrops del DOM
+    const allBackdrops = document.querySelectorAll('.modal-backdrop');
+    allBackdrops.forEach(backdrop => {
+      backdrop.remove();
+    });
+
+    // Ocultar todos los modales
+    const allModals = document.querySelectorAll('.modal');
+    allModals.forEach(modal => {
+      modal.classList.remove('show');
+      (modal as HTMLElement).style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      modal.removeAttribute('aria-modal');
+    });
+
+    // Limpiar estilos del body
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('padding-right');
+    document.body.style.removeProperty('overflow');
+    document.body.removeAttribute('data-bs-overflow');
+    document.body.removeAttribute('data-bs-padding-right');
   }
 
   private initializeTooltips() {
     try {
-      const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      const tooltipTriggerList = Array.from(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
       tooltipTriggerList.forEach((tooltipTriggerEl) => {
-        const bootstrapGlobal = (window as unknown as { 
-          bootstrap?: { Tooltip: new(element: Element) => void } 
+        const bootstrapGlobal = (window as unknown as {
+          bootstrap?: { Tooltip: new(element: Element) => void }
         }).bootstrap;
         if (bootstrapGlobal) {
           new bootstrapGlobal.Tooltip(tooltipTriggerEl);
