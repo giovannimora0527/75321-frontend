@@ -1,1 +1,76 @@
-<p>formula works!</p>
+<ngx-spinner type="pacman" size="medium" color="#F5F2F2">
+  <p style="color: #fff">{{ titleSpinner }}</p>
+</ngx-spinner>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h3 class="mb-0">
+            <i class="fa fa-pills"></i>
+            &nbsp;Lista de medicamentos
+          </h3>
+          <small>Estos son las fórmulas médicas registradas en el sistema.</small>
+        </div>
+        <div class="col-lg-5 text-end">
+          <button class="btn btn-outline-primary" (click)="abrirNuevoFormula()">Nueva formula</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+            <input type="text" 
+            placeholder="Busque por cualquier campo" 
+            class="form-control"
+            [(ngModel)]="busqueda"
+            (keyup)="filtrarFormulas()">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>Tipo y # de documento</th>
+                  <th>Nombres y Apellidos del paciente</th>
+                  <th>Fecha y hora</th>
+                  <th>Dosis</th>
+                  <th>Indicaciones</th>
+                  <th>Fecha de creación</th>
+                  <th>Fecha de modificación</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="formulaListFiltered.length > 0">
+                <tr *ngFor="let formula of formulaListFiltered">
+                  <td>{{ formula.cita.paciente.tipoDocumento }} {{ formula.cita.paciente.numeroDocmento }}</td>
+                  <td>{{ formula.cita.paciente.nombres }} {{ formula.cita.paciente.apellidos }}</td>
+                  <td>{{ formula.cita.fechaHora | date: 'yyyy-MM-dd HH:mm' }}</td>
+                  <td>{{ formula.dosis }}</td>
+                  <td>{{ formula.indicaciones }}</td>
+                  <td>{{ formula.fechaCreacionRegistro | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td>{{ formula.fechaActualizacionRegistro | date: 'yyyy-MM-dd HH:mm:s' }}</td>
+
+                  <td>
+                    <button class="btn btn-outline-primary" (click)="abrirEditarFormula(formula)">
+                      <i class="fa fa-edit"></i>
+                      Editar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="formulaList.length === 0">
+                <tr>
+                  <td colspan="8" class="text-center">No hay recetas disponibles.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
