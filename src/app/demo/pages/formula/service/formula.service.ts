@@ -1,28 +1,28 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
+import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 import { Formula } from '../models/formula';
-import { Observable } from 'rxjs';
-import { RespuestaRS } from '../../usuario/model/respuesta-rs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormulaService {
-  private apiUrl = environment.apiUrl;
-  private endpoint = 'receta';
+  urlBase = environment.apiUrl;
+  endpoint: string = 'receta';
 
   constructor(private readonly backendService: BackendService) {}
 
-  listarRecetas(): Observable<Formula[]> {
-    return this.backendService.get(this.apiUrl, this.endpoint, 'listar');
+  listarFormulas(): Observable<Formula[]> {
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
 
-  guardarReceta(formula: Formula): Observable<RespuestaRS> {   
-    return this.backendService.post(this.apiUrl, this.endpoint, 'guardar', formula);
-  } 
+  guardarFormula(formula: Formula): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', formula);
+  }
 
-  actualizarReceta(formula: Formula): Observable<RespuestaRS> {   
-    return this.backendService.post(this.apiUrl, this.endpoint, 'actualizar', formula);
-  } 
+  actualizarFormula(formula: Formula): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', formula);
+  }
 }

@@ -1,24 +1,16 @@
 import { Component } from '@angular/core';
 import { UsuarioService } from './service/usuario.service';
-import { Usuario } from './model/usuario';
+import { Usuario } from './models/usuario';
 import { CommonModule } from '@angular/common';
-import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors
-} from '@angular/forms';
+// Import library module
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
 import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
-import { delay, map, Observable, of } from 'rxjs';
+
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-usuario',
@@ -29,97 +21,60 @@ import { delay, map, Observable, of } from 'rxjs';
 export class UsuarioComponent {
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
+  usuarios: Usuario[] = [];
   titleModal: string = '';
   titleBoton: string = '';
-  usuariosList: Usuario[] = [];
   usuarioSelected: Usuario;
-  titleSpinner: string = 'Cargando ...';
+  titleSpinner: string = "Cargando...";
 
-  /**
-   * Formulario para crear/editar usuario.
-   */
-  form: FormGroup = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
-    rol: new FormControl(''),
-    activo: new FormControl('')
-  });
+  form: FormGroup;
 
   constructor(
     private readonly usuarioService: UsuarioService,
     private readonly formBuilder: FormBuilder,
     private readonly spinner: NgxSpinnerService
-  ) {
+  ) {    
     this.listarUsuarios();
-    this.inicializarFormulario();
+    this.inicializarFormulario();    
   }
 
-  /**
-   * Relaciona el formulario inicial con sus respectivos validadores.
-   */
   inicializarFormulario() {
     this.form = this.formBuilder.group({
-      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(12)]],
-      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      email: ['', [Validators.required, Validators.email]],
       rol: ['', [Validators.required]],
-      activo: ['']
+      activo: [true]
     });
   }
 
-  /**
-   * Siempre va igual.
-   */
+
+
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
-  /**
-   * Validador asincrono para la contrasena.
-   * @param control Validador asincrono para la contrasena.
-   * @returns Validador.
-   */
-  passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-    const contrasenasProhibidas = ['12345678', 'password', 'admin'];
-
-    return of(contrasenasProhibidas.includes(control.value)).pipe(
-      delay(800), // simulamos llamada a servidor
-      map((invalida) => (invalida ? { passwordProhibida: true } : null))
-    );
-  }
-
-  /**
-   * Funcion para cargar la lista de usuarios.
-   */
   listarUsuarios() {
     this.spinner.show();
     this.usuarioService.listarUsuarios().subscribe({
       next: (data) => {
+        this.usuarios = data;
         this.spinner.hide();
-        this.usuariosList = data;
       },
       error: (error) => {
+        console.error('Error al listar usuarios', error);
         this.spinner.hide();
-        console.error('Error al cargar usuarios: ', error);
       }
     });
   }
 
-  /**
-   * Funcion para cerrar el modal.
-   */
   closeModal() {
-    this.limpiarFormulario();
-    this.usuarioSelected = new Usuario();
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
+    this.limpiarFormulario();
   }
 
-  /**
-   * Abre el modal para crear o editar un usuario.
-   * @param modo 'C' para crear, 'E' para editar
-   */
-  openModal(modo: string) {    
+  openModal(modo: string) {
     this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
     this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
     this.modoFormulario = modo;
@@ -131,76 +86,83 @@ export class UsuarioComponent {
     }
   }
 
-  /**
-   * Abre el modal para crear un nuevo usuario.
-   */
   abrirNuevoUsuario() {
-    this.usuarioSelected = new Usuario();
-    // Dejamos el formulario en blanco
-    this.limpiarFormulario();
+    this.usuarioSelected = null;
     this.openModal('C');
   }
 
-  /**
-   * Limpia los campos del formulario.
-   */
-  limpiarFormulario() {
-    this.form.reset();
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-  }
-
-  /**
-   * Abre el modal para editar un usuario existente.
-   * @param usuario Usuario a editar.
-   */
   abrirEditarUsuario(usuario: Usuario) {
     this.usuarioSelected = usuario;
     this.openModal('E');
   }
 
   /**
-   * Funcion para guardar los datos en crear/actualizar usuario.
+   * Funcion que permite guardar/actualizar un usuario.
    */
   guardarUsuario() {
-    this.spinner.show();
+    this.titleSpinner = this.modoFormulario === 'C' ? "Creando usuario..." : "Actualizando usuario...";
+    this.spinner.show();   
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo')?.setValue(true);
+    }
     if (this.form.invalid) {
+      // Manejar el formulario inválido
       this.spinner.hide();
-      Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
+      Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
       return;
     }
+
     if (this.modoFormulario === 'C') {
-      this.form.get('activo').setValue(true);
+      // Modo Creación
       this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
-        next: (data) => {
-          this.spinner.hide();
-          Swal.fire('Éxito', data.mensaje, 'success');
-          this.closeModal();
-          this.listarUsuarios();
+        next: (data) => {          
+          if (data.status === 200) {
+            this.spinner.hide();
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
+            this.listarUsuarios();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
         },
         error: (error) => {
-          this.spinner.hide();
-          console.error('Error al guardar usuario: ', error);
+          this.spinner.hide();        
           Swal.fire('Error', error.error.message, 'error');
         }
       });
     } else {
-      const userActualizar = { ...this.usuarioSelected, ...this.form.value };
-
-      this.usuarioService.actualizarUsuario(userActualizar).subscribe({
-        next: (data) => {
-          this.spinner.hide();
-          console.log(data);
-          Swal.fire('Éxito', data.mensaje, 'success');
-          this.closeModal();
-          this.listarUsuarios();
+      // Modo Edición
+      const usuarioActualizado: Usuario = this.form.getRawValue();
+      usuarioActualizado.id = this.usuarioSelected.id;
+      this.usuarioService.actualizarUsuario(usuarioActualizado).subscribe({
+        next: (data) => {       
+          if (data.status === 200) {
+            this.spinner.hide();
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
+            this.listarUsuarios();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
         },
         error: (error) => {
-          this.spinner.hide();
-          console.error('Error al actualizar usuario: ', error);
+          this.spinner.hide();          
           Swal.fire('Error', error.error.message, 'error');
         }
       });
     }
+  }
+
+  limpiarFormulario() {
+    this.form.reset({
+      username: this.usuarioSelected ? this.usuarioSelected.username : '',
+      email: this.usuarioSelected ? this.usuarioSelected.email : '',
+      rol: this.usuarioSelected ? this.usuarioSelected.rol : '',
+      activo: this.usuarioSelected ? this.usuarioSelected.activo : false
+    });
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
 }

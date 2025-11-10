@@ -3,10 +3,10 @@ import { Medicamento } from "../../medicamento/models/medicamento";
 
 export class Formula {
     id!: number;
-    medicamento!: Medicamento;
-    cita!: Cita;
-    dosis!: string;
     indicaciones!: string;
+    dosis!: string;
     fechaCreacionRegistro!: Date;
     fechaActualizacionRegistro!: Date;
+    cita!: Cita;
+    medicamento!: Medicamento;
 }

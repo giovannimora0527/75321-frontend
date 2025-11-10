@@ -1,11 +1,12 @@
 export class Paciente {
     id!: number;
+    usuarioId!: number;
     tipoDocumento!: string;
-    numeroDocmento!: string;
+    numeroDocumento!: string;
     nombres!: string;
     apellidos!: string;
     fechaNacimiento!: string;
     genero!: string;
-    direccion!: string;
     telefono!: string;
+    direccion!: string;
 }

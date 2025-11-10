@@ -1,12 +1,12 @@
-import { Especializacion } from './especializacion';
+import { Especializacion } from "./especializacion";
 
 export class Medico {
-  id!: number;
-  nombres!: string;
-  apellidos!: string;
-  tipoDocumento!: string;
-  numeroDocumento!: string;
-  registroProfesional!: string;
-  telefono!: string;
-  especializacion!: Especializacion;
+    id!: number;
+    nombres!: string;
+    apellidos!: string;
+    documento!: string;
+    tipoDocumento!: string;
+    telefono!: string;
+    registroProfesional!: string;
+    especializacion!: Especializacion;
 }
