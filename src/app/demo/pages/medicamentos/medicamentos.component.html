@@ -31,7 +31,10 @@
                 <th>Nombre</th>
                 <th>Presentación</th>
                 <th>Cantidad</th>
+                <th>Fecha Compra</th>
                 <th>Fecha Vencimiento</th>
+                <th>Creado</th>
+                <th>Modificado</th>
                 <th>Descripción</th>
                 <th style="width: 12%;" class="text-center">Acciones</th>
               </tr>
@@ -81,22 +84,54 @@
   </tr>
             </thead>
             <tbody *ngIf="medicamentosFiltrados.length > 0; else vacio">
-                <tr *ngFor="let m of medicamentosFiltrados; trackBy: trackById" class="align-middle">              
+              <tr *ngFor="let m of medicamentosFiltrados; trackBy: trackById" class="align-middle">              
                 <td class="text-center">
                   <span class="badge bg-secondary rounded-pill px-3 py-2 fw-semibold">
                     {{ m.id }}
                   </span>
                 </td>
+            
                 <td class="fw-semibold">{{ m.nombre }}</td>
                 <td>{{ m.presentacion }}</td>
                 <td>{{ m.cantidad }}</td>
+            
+                <!-- 🆕 Fecha de compra -->
+                <td>
+                  <span class="text-muted">
+                    <i class="fa fa-calendar-check me-1"></i>
+                    {{ m.fechaCompra | date:'yyyy-MM-dd' }}
+                  </span>
+                </td>
+            
+                <!-- Fecha de vencimiento (ya existía) -->
                 <td>
                   <span class="text-muted">
                     <i class="fa fa-calendar me-1"></i>
                     {{ m.fechaVencimiento | date:'yyyy-MM-dd' }}
                   </span>
                 </td>
+            
+                <!-- 🆕 Fecha de creación -->
+                <td>
+                  <span class="text-muted">
+                    <i class="fa fa-clock me-1"></i>
+                    {{ m.fechaCreacionRegistro | date:'short' }}
+                  </span>
+                </td>
+            
+                <!-- 🆕 Fecha de modificación -->
+                <td>
+                  <span *ngIf="m.fechaModificacionRegistro; else sinMod" class="text-muted">
+                    <i class="fa fa-sync-alt me-1"></i>
+                    {{ m.fechaModificacionRegistro | date:'short' }}
+                  </span>
+                  <ng-template #sinMod>
+                    <em class="text-muted">—</em>
+                  </ng-template>
+                </td>
+            
                 <td>{{ m.descripcion }}</td>
+            
                 <td class="text-center">
                   <button class="btn btn-outline-primary btn-sm shadow-sm"
                           (click)="abrirEditarMedicamento(m)"
@@ -105,7 +140,7 @@
                   </button>
                 </td>
               </tr>
-            </tbody>
+            </tbody>        
           </table>
   
           <ng-template #vacio>

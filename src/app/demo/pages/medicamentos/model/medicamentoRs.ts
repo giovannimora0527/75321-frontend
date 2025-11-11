@@ -5,5 +5,10 @@ export class MedicamentoRs {
     presentacion!: string;         // Presentación (ejemplo: Tableta 850 mg)
     cantidad!: number;             // Cantidad disponible
     fechaVencimiento!: string;     // Fecha de vencimiento (YYYY-MM-DD)
+
+    //nuevos campos
+    fechaCompra!: string;
+    fechaCreacionRegistro!: string;
+    fechaModificacionRegistro!: string | null;
   }
   

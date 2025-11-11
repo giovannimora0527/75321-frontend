@@ -191,7 +191,9 @@ inicializarFormulario() {
     descripcion: ['', [Validators.required, Validators.minLength(5)]],
     presentacion: ['', [Validators.required, Validators.minLength(2)]],
     cantidad: [null, [Validators.required, Validators.min(1)]],
-    fechaVencimiento: ['', [Validators.required]]
+    fechaVencimiento: ['', [Validators.required]],
+    //nuevo campo
+    fechaCompra: ['', [Validators.required]],
   });
 }
 //acceder al formulario
