@@ -1,0 +1,54 @@
+// Tabla de medicamentos: estilos suaves y responsivos
+.card {
+  border-radius: 0.5rem;
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+table.table {
+  thead th {
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  thead tr.table-light {
+    background-color: #f8faf9;
+  }
+
+  thead input.form-control.form-control-sm {
+    background: transparent;
+    box-shadow: none !important;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  tbody td,
+  thead th {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+  }
+}
+
+// Spinner overlay fix for Safari/Edge z-index contexts
+.position-fixed {
+  backdrop-filter: blur(1px);
+}
+
+// Utilidades
+.fw-semibold { font-weight: 600; }
+
+@media (max-width: 576px) {
+  .card-header h4 { font-size: 1.1rem; }
+  table.table thead th {
+    font-size: 0.85rem;
+  }
+  table.table thead input.form-control.form-control-sm {
+    font-size: 0.85rem;
+  }
+}

@@ -39,49 +39,65 @@
                 <th style="width: 12%;" class="text-center">Acciones</th>
               </tr>
               <!-- Fila de filtros -->
-             <tr class="table-light">
-            <th>
-               <input type="text"
-             class="form-control form-control-sm text-center border-0"
-             placeholder="Filtrar ID"
-             [(ngModel)]="filtros.id"
-             (input)="aplicarFiltros()">
-    </th>
-    <th>
-      <input type="text"
-             class="form-control form-control-sm border-0"
-             placeholder="Filtrar nombre"
-             [(ngModel)]="filtros.nombre"
-             (input)="aplicarFiltros()">
-     </th>
-    <th>
-      <input type="text"
-             class="form-control form-control-sm border-0"
-             placeholder="Filtrar presentación"
-             [(ngModel)]="filtros.presentacion"
-             (input)="aplicarFiltros()">
-    </th>
-    <th>
-      <input type="text"
-             class="form-control form-control-sm border-0"
-             placeholder="Filtrar cantidad"
-             [(ngModel)]="filtros.cantidad"
-             (input)="aplicarFiltros()">
-    </th>
-    <th>
-      <input type="text"
-             class="form-control form-control-sm border-0"
-             placeholder="Filtrar fecha"
-             [(ngModel)]="filtros.fechaVencimiento"
-             (input)="aplicarFiltros()">
-    </th>
-    <th colspan="2" class="text-center">
-      <button type="button" class="btn btn-sm btn-outline-secondary border-0"
-              (click)="limpiarFiltros()" title="Limpiar filtros">
-        <i class="fa fa-eraser me-1"></i> Limpiar
-      </button>
-    </th>
-  </tr>
+             <tr class="table-light align-middle">
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm text-center border-0"
+                       placeholder="Filtrar ID"
+                       [(ngModel)]="filtros.id"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm border-0"
+                       placeholder="Filtrar nombre"
+                       [(ngModel)]="filtros.nombre"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm border-0"
+                       placeholder="Filtrar presentación"
+                       [(ngModel)]="filtros.presentacion"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm border-0"
+                       placeholder="Filtrar cantidad"
+                       [(ngModel)]="filtros.cantidad"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm border-0"
+                       placeholder="Filtrar compra (YYYY-MM-DD)"
+                       [(ngModel)]="filtros.fechaCompra"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm border-0"
+                       placeholder="Filtrar vencimiento (YYYY-MM-DD)"
+                       [(ngModel)]="filtros.fechaVencimiento"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th></th>
+              <th></th>
+              <th>
+                <input type="text"
+                       class="form-control form-control-sm border-0"
+                       placeholder="Filtrar descripción"
+                       [(ngModel)]="filtros.descripcion"
+                       (input)="aplicarFiltros()">
+              </th>
+              <th class="text-center">
+                <button type="button" class="btn btn-sm btn-outline-secondary border-0"
+                        (click)="limpiarFiltros()" title="Limpiar filtros">
+                  <i class="fa fa-eraser me-1"></i> Limpiar
+                </button>
+              </th>
+            </tr>
             </thead>
             <tbody *ngIf="medicamentosFiltrados.length > 0; else vacio">
               <tr *ngFor="let m of medicamentosFiltrados; trackBy: trackById" class="align-middle">              

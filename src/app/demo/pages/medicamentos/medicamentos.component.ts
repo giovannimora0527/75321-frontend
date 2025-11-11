@@ -42,7 +42,9 @@ export class MedicamentosComponent {
   nombre: '',
   presentacion: '',
   cantidad: '',
+  fechaCompra: '',
   fechaVencimiento: '',
+  descripcion: '',
 };
 
    //Contenedor de los campos del formulario
@@ -192,8 +194,6 @@ inicializarFormulario() {
     presentacion: ['', [Validators.required, Validators.minLength(2)]],
     cantidad: [null, [Validators.required, Validators.min(1)]],
     fechaVencimiento: ['', [Validators.required]],
-    //nuevo campo
-    fechaCompra: ['', [Validators.required]],
   });
 }
 //acceder al formulario
@@ -252,16 +252,18 @@ trackById(index: number, item: any) {
 }
 //Metodo para aplicar los filtros
 aplicarFiltros() {
-  const { id, nombre, presentacion, cantidad, fechaVencimiento } = this.filtros;
+  const { id, nombre, presentacion, cantidad, fechaCompra, fechaVencimiento, descripcion } = this.filtros;
 
   this.medicamentosFiltrados = this.medicamentoList.filter(m => {
     const matchId = id ? m.id?.toString().includes(id) : true;
     const matchNombre = nombre ? m.nombre?.toLowerCase().includes(nombre.toLowerCase()) : true;
     const matchPresentacion = presentacion ? m.presentacion?.toLowerCase().includes(presentacion.toLowerCase()) : true;
     const matchCantidad = cantidad ? m.cantidad?.toString().includes(cantidad) : true;
-    const matchFecha = fechaVencimiento ? (m.fechaVencimiento || '').includes(fechaVencimiento) : true;
+    const matchFechaCompra = fechaCompra ? (m.fechaCompra || '').includes(fechaCompra) : true;
+    const matchFechaVenc = fechaVencimiento ? (m.fechaVencimiento || '').includes(fechaVencimiento) : true;
+    const matchDescripcion = descripcion ? m.descripcion?.toLowerCase().includes(descripcion.toLowerCase()) : true;
 
-    return matchId && matchNombre && matchPresentacion && matchCantidad && matchFecha;
+    return matchId && matchNombre && matchPresentacion && matchCantidad && matchFechaCompra && matchFechaVenc && matchDescripcion;
   });
 }
 //Limpiar los filtros
@@ -271,7 +273,9 @@ limpiarFiltros() {
     nombre: '',
     presentacion: '',
     cantidad: '',
+    fechaCompra: '',
     fechaVencimiento: '',
+    descripcion: '',
   };
   this.medicamentosFiltrados = [...this.medicamentoList];
 }
