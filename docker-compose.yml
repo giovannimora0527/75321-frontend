@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  clinica_frontend:
+    container_name: clinica_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - HOST=0.0.0.0
+    networks:
+      - clinica_net
+
+networks:
+  clinica_net:
+    external: true
+
+
+
+
+
