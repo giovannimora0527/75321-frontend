@@ -1,8 +1,8 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { PacienteService } from './service/paciente.service';
-import { Paciente } from './model/paciente';
+import { Paciente } from './models/paciente';
 import { CommonModule } from '@angular/common';
-import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 
 import {
   FormBuilder,
@@ -19,12 +19,11 @@ import Modal from 'bootstrap/js/dist/modal';
 import { delay, map, Observable, of } from 'rxjs';
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { FormulaMedica } from '../formula-medica/model/formula-medica';
 import { FilterPacientesPipe } from './pipes/filter-paciente.pipe';
 
 @Component({
   selector: 'app-paciente',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterPacientesPipe,NgxSpinnerModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterPacientesPipe, NgxSpinnerModule],
   templateUrl: './paciente.component.html',
   styleUrl: './paciente.component.scss'
 })

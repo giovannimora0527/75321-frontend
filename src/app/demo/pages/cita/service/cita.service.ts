@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
-import { Cita } from '../model/cita';
+import { Cita } from '../models/cita';
 import { environment } from '../../../../../environments/environment';
-import { RespuestaRS } from '../model/respuesta-rs';
+import { RespuestaRS } from '../models/respuesta-rs';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Especializacion } from '../model/especializacion';
+import { Especializacion } from '../models/especializacion';
 
 @Pipe({
   name: 'filterEspecializaciones',

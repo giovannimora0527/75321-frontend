@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MedicamentoService } from './service/medicamento.service';
-import { Medicamento } from './model/medicamento';
+import { Medicamento } from './models/medicamento';
 import { CommonModule } from '@angular/common';
 import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
 

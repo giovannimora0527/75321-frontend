@@ -2,19 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CitaService } from './service/cita.service';
 import { MedicoService } from '../medico/service/medico.service';
 import { PacienteService } from '../paciente/service/paciente.service';
-import { Cita } from './model/cita';
-import { Paciente } from '../paciente/model/paciente';
+import { Cita } from './models/cita';
+import { Paciente } from '../paciente/models/paciente';
 import { Medico } from '../medico/models/medico';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import Modal from 'bootstrap/js/dist/modal';
 import { FilterCitasPipe } from './pipes/filter-cita.pipe';
-import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-citas',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterCitasPipe,NgxSpinnerModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterCitasPipe, NgxSpinnerModule],
   templateUrl: './cita.component.html',
   styleUrls: ['./cita.component.scss']
 })

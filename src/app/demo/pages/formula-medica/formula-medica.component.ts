@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormulaMedica } from './model/formula-medica';
 import { FormulaMedicaService } from './service/formula-medica.service';
-import { Medicamento } from '../medicamento/model/medicamento';
+import { Medicamento } from '../medicamento/models/medicamento';
 import { MedicamentoService } from '../medicamento/service/medicamento.service';
 import { Cita } from '../cita/model/cita';
 import { CitaService } from '../cita/service/cita.service';

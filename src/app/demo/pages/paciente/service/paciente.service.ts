@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
-import { Paciente } from '../model/paciente';
+import { Paciente } from '../models/paciente';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable({

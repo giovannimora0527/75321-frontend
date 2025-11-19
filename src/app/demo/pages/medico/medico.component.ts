@@ -1,126 +1,98 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MedicoService } from './service/medico.service';
 import { Medico } from './models/medico';
 import { CommonModule } from '@angular/common';
-// Import Bootstrap JS for tooltips
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors
-} from '@angular/forms';
-
-import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
 import Modal from 'bootstrap/js/dist/modal';
-import { delay, map, Observable, of } from 'rxjs';
-import { Especializacion } from '../especializacion/model/especializacion';
-import { EspecializacionService } from '../especializacion/service/especializacion.service';
+import { UtilApiService } from 'src/app/services/common/util-api.service';
+import { Especializacion } from './models/especializacion';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-medico',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './medico.component.html',
   styleUrl: './medico.component.scss'
 })
-export class MedicoComponent implements AfterViewInit {
+export class MedicoComponent {
+  /**
+   * Variables para el modal.
+   */
   modalInstance: Modal | null = null;
   modoFormulario: string = '';
   titleModal: string = '';
   titleBoton: string = '';
-  medicoList: Medico[] = [];
-  especializacionList: Especializacion[] = [];
   medicoSelected: Medico;
+  titleSpinner: string = 'Cargando...';
 
   /**
-   * Formulario para crear/editar médico.
+   * Variables para la tabla de datos o datatable.
    */
-  form: FormGroup = new FormGroup({
-    nombres: new FormControl(''),
-    apellidos: new FormControl(''),
-    tipoDocumento: new FormControl(''),
-    numeroDocumento: new FormControl(''),
-    registroProfesional: new FormControl(''),
-    telefono: new FormControl(''),
-    especializacion: new FormControl('')
-  });
-medico: Medico;
+  medicoList: Medico[] = [];
+  especializacionList: Especializacion[] = [];
+
+  form: FormGroup;
 
   constructor(
     private readonly medicoService: MedicoService,
-    private readonly especializacionService: EspecializacionService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private readonly utilApiService: UtilApiService,
+    private readonly spinner: NgxSpinnerService
   ) {
     this.listarMedicos();
     this.listarEspecializaciones();
     this.inicializarFormulario();
   }
 
-  /**
-   * Relaciona el formulario inicial con sus respectivos validadores.
-   */
   inicializarFormulario() {
     this.form = this.formBuilder.group({
-      nombres: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      apellidos: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       tipoDocumento: ['', [Validators.required]],
-      numeroDocumento: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(20)]],
-      registroProfesional: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(20)]],
-      telefono: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(15)]],
-      especializacionId: ['', [Validators.required]]
+      documento: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(16)]],
+      nombres: ['', [Validators.required, Validators.minLength(3)]],
+      apellidos: ['', [Validators.required, Validators.minLength(4)]],
+      telefono: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10)]],
+      registroProfesional: ['', [Validators.required]],
+      especializacion: ['', [Validators.required]],
+      activo: [true]
     });
   }
 
-  /**
-   * Siempre va igual.
-   */
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
-  ngAfterViewInit() {
-    // Inicializa el tooltip de Bootstrap
-    this.initializeTooltips();
+  listarEspecializaciones() {
+    this.utilApiService.listarEspecializaciones().subscribe({
+      next: (data) => {
+        this.especializacionList = data;
+      },
+      error: (error) => {
+        console.error('Error fetching especializaciones:', error);
+      }
+    });
   }
 
   listarMedicos() {
     this.medicoService.listarMedicos().subscribe({
       next: (data) => {
         this.medicoList = data;
-        setTimeout(() => this.initializeTooltips(), 0);
       },
       error: (error) => {
-        console.error('Error fetching medicos:', error);
+        console.error('Error fetching medico list:', error);
       }
     });
   }
 
-  listarEspecializaciones() {
-    this.especializacionService.listarEspecializaciones().subscribe({
-      next: (data) => (this.especializacionList = data),
-      error: (err) => console.error('Error al listar especializaciones', err),
-    })
-  }
-
-  /**
-     * Funcion para cerrar el modal.
-     */
   closeModal() {
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
   }
 
-  /**
-   * Abre el modal para crear o editar un Medico.
-   * @param modo 'C' para crear, 'E' para editar
-   */
   openModal(modo: string) {
     this.titleModal = modo === 'C' ? 'Crear Medico' : 'Editar Medico';
     this.titleBoton = modo === 'C' ? 'Guardar Medico' : 'Actualizar Medico';
@@ -133,81 +105,67 @@ medico: Medico;
     }
   }
 
-  /**
-   * Abre el modal para crear un nuevo médico.
-   */
   abrirNuevoMedico() {
     this.medicoSelected = null;
-    this.form.reset();
     this.openModal('C');
   }
 
-  /**
-   * Abre el modal para editar un usuario existente.
-   * @param medico Medico a editar.
-   */
-  abrirEditarMedico(medico: Medico) {
+  editarModalMedico(medico: Medico) {
     this.medicoSelected = medico;
-    this.form.patchValue({
-      nombres: medico.nombres,
-      apellidos: medico.apellidos,
-      tipoDocumento: medico.tipoDocumento,
-      numeroDocumento: medico.numeroDocumento,
-      registroProfesional: medico.registroProfesional,
-      telefono: medico.telefono,
-      especializacionId: medico.especializacionId
-    });
+    console.log(medico);
     this.openModal('E');
   }
 
   guardarMedico() {
+    this.titleSpinner = this.modoFormulario === 'C' ? 'Creando médico...' : 'Actualizando médico...';
+    this.spinner.show();
     if (this.form.invalid) {
-      Swal.fire('Error', 'Por favor completa todos los campos requeridos', 'error');
+      // Manejar el formulario inválido
+      this.spinner.hide();
+      Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
       return;
     }
 
-    const { nombres, apellidos, tipoDocumento, numeroDocumento, registroProfesional, telefono, especializacionId } = this.form.value;
-    console.log('Formulario de médico:', this.form.value);
-    const medico: Medico = {
-      nombres,
-      apellidos,
-      tipoDocumento,
-      numeroDocumento,
-      registroProfesional,
-      telefono,
-      especializacionId: Number(especializacionId)
-    };
-
-    console.log('Datos del médico a guardar:', medico);
-
-    this.medicoService.guardarMedico(medico).subscribe({
-      next: (data) => {
-        Swal.fire('Éxito', 'Médico guardado correctamente', 'success');
-        this.closeModal();
-        this.listarMedicos();
-      },
-      error: (err) => {
-        console.error('Error al guardar médico', err);
-        Swal.fire('Error', 'Ocurrió un error al guardar el médico', 'error');
-      }
-    });
-  }
-
-  /**
-   * Initialize Bootstrap tooltips
-   */
-  private initializeTooltips() {
-    try {
-      const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      tooltipTriggerList.forEach((tooltipTriggerEl) => {
-        // Safe way to access Bootstrap's Tooltip constructor
-        const bootstrapGlobal = (window as unknown as { bootstrap?: { Tooltip: new (element: Element) => void } }).bootstrap;
-        if (bootstrapGlobal) {
-          new bootstrapGlobal.Tooltip(tooltipTriggerEl);
+    if (this.modoFormulario === 'C') {
+      // Crear     
+      this.medicoService.guardarMedico(this.form.getRawValue()).subscribe({
+        next: (data) => {
+          if (data.status === 200) {
+            this.spinner.hide();
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
+            this.listarMedicos();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();
+          Swal.fire('Error', error.error.message, 'error');
         }
       });
-    } catch (error) {
-      console.warn('Bootstrap tooltips could not be initialized:', error);
+    } else {
+      // Actualizar      
+      const usuarioActualizado: Medico = this.form.getRawValue();
+      usuarioActualizado.id = this.medicoSelected.id;
+      this.medicoService.actualizarMedico(usuarioActualizado).subscribe({
+        next: (data) => {
+          if (data.status === 200) {
+            this.spinner.hide();
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
+            this.listarMedicos();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();
+          Swal.fire('Error', error.error.message, 'error');
+        }
+      });
     }
   }
 }

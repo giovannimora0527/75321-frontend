@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Medicamento } from '../model/medicamento';
+import { Medicamento } from '../models/medicamento';
 
 @Pipe({
   name: 'filterMedicamentos',
@@ -15,7 +15,7 @@ export class FilterMedicamentosPipe implements PipeTransform {
     return medicamentos.filter(e =>
       e.nombre.toLowerCase().includes(termino) ||
       e.descripcion.toLowerCase().includes(termino) ||
-      e.presentacion.toLowerCase().includes(termino) 
+      e.presentacion.toLowerCase().includes(termino)
     );
   }
 }

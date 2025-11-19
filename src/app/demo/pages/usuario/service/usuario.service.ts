@@ -1,28 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
-import { Usuario } from '../model/usuario';
-import { environment } from '../../../../../environments/environment';
-import { RespuestaRS } from '../model/respuesta-rs';
+import { environment } from 'src/environments/environment';
+import { Usuario } from '../models/usuario';
+import { RespuestaRs } from '../models/respuesta-rs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuarioService {
-  private apiUrl = environment.apiUrl;
-  private endpoint = 'users';
+  urlBase = environment.apiUrl;
+  endpoint: string = 'usuario';
 
   constructor(private readonly backendService: BackendService) {}
 
   listarUsuarios(): Observable<Usuario[]> {
-    return this.backendService.get(this.apiUrl, this.endpoint, 'all');
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
 
-  guardarUsuario(usuario: Usuario): Observable<RespuestaRS> {   
-    return this.backendService.post(this.apiUrl, this.endpoint, 'guardar', usuario);
+  guardarUsuario(usuario: Usuario): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', usuario);
   }
 
-  actualizarUsuario(usuario: Usuario): Observable<RespuestaRS> {   
-    return this.backendService.post(this.apiUrl, this.endpoint, 'actualizar', usuario);
-  }
+  actualizarUsuario(usuario: Usuario): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', usuario);
+  } 
+
+
 }

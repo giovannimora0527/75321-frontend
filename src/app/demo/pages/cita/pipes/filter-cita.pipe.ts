@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Cita } from '../model/cita';
+import { Cita } from '../models/cita';
 
 @Pipe({
   name: 'filterCitas',

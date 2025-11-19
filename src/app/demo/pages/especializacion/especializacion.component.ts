@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Especializacion } from './model/especializacion';
+import { Especializacion } from './models/especializacion';
 import { EspecializacionService } from './service/especializacion.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -7,12 +7,12 @@ import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import Modal from 'bootstrap/js/dist/modal';
 import Swal from 'sweetalert2';
 import { FilterEspecializacionesPipe } from './pipes/filter-especializaciones.pipe';
-import { NgxSpinnerModule, NgxSpinnerService  } from "ngx-spinner";
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-especializacion',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterEspecializacionesPipe,NgxSpinnerModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, FilterEspecializacionesPipe, NgxSpinnerModule],
   templateUrl: './especializacion.component.html',
   styleUrls: ['./especializacion.component.scss']
 })
