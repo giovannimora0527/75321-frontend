@@ -1,0 +1,24 @@
+# Etapa 1: Construcción de la aplicación Angular
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build -- --configuration production
+
+# Etapa 2: Servir con NGINX
+FROM nginx:1.25-alpine
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# ✅ CAMBIO AQUÍ - La ruta correcta según angular.json
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production --output-hashing none",
     "build-prod": "ng build --configuration production --base-href /demos/admin-templates/datta-able/angular/free/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
