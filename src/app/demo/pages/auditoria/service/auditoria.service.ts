@@ -14,26 +14,18 @@ export class AuditoriaService {
   constructor(private readonly backend:BackendService) { }
 
   //Api filtrar debemos pasarle los parametros
-  listarAuditoria(
-  username?: string,
-  tipo?: string,
-  desde?: string,
-  hasta?: string
-): Observable<AuditoriaRs[]> {
-
-  const params:any = {};
+  listarAuditoriaFiltros(username?: string, tipo?: string, desde?: string, hasta?: string) {
+  let params: any = {};
 
   if (username) params.username = username;
   if (tipo) params.tipo = tipo;
   if (desde) params.desde = desde;
   if (hasta) params.hasta = hasta;
 
-  return this.backend.get<AuditoriaRs[]>(
-    this.apiurl,
-    this.endpoint,
-    'filtrar',
-    params
-  );
+  return this.backend.get<AuditoriaRs[]>(this.apiurl, this.endpoint, 'filtrar', params);
 }
+
+ 
+
 
 }

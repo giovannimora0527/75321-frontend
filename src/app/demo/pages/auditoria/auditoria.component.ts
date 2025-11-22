@@ -1,40 +1,58 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';   
 import { AuditoriaService } from './service/auditoria.service';
 import { AuditoriaRs } from './model/auditoriaRs';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-auditoria',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    FormsModule          // para manejar la vistas
+  ],
   templateUrl: './auditoria.component.html',
   styleUrl: './auditoria.component.scss'
 })
 export class AuditoriaComponent {
 
-  //Guardamos en un array
   auditoriaList: AuditoriaRs[] = [];
-  //Necesitamos la fecha actual
-  fechaActual = new Date();
+  now: Date = new Date();
 
-  
-  //Construimos el constructor
-  constructor(
-    private readonly auditoriaService:AuditoriaService
-  ){
+  // filtros
+  username: string = '';
+  tipo: string = '';
+  desde: string = '';
+  hasta: string = '';
+
+  constructor(private readonly auditoriaService: AuditoriaService) {
     this.listarAuditoria();
   }
-  //Logica del Negocio
-  listarAuditoria(){
-    this.auditoriaService.listarAuditoria().subscribe({
-      next: (auditoriaRs: AuditoriaRs[]) => {
-        this.auditoriaList = auditoriaRs;
-        console.log('Logs de auditoría cargados:', auditoriaRs);
-      },
-      error: (err) => {
-        console.error('Error al cargar auditoría', err);
-      }
+
+  //Logica del negocio
+  listarAuditoria() {
+    this.auditoriaService.listarAuditoriaFiltros(
+      this.username,
+      this.tipo,
+      this.desde,
+      this.hasta
+    ).subscribe({
+      next: data => this.auditoriaList = data,
+      error: err => console.error('Error al cargar auditoría', err),
     });
   }
 
+  aplicarFiltros() {
+    this.listarAuditoria();
+  }
+  //Filtramos segun los parametros
+
+  limpiarFiltros() {
+    this.username = '';
+    this.tipo = '';
+    this.desde = '';
+    this.hasta = '';
+    this.listarAuditoria();
+  }
 }
+
