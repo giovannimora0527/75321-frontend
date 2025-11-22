@@ -9,6 +9,7 @@ import { CitaComponent } from './demo/pages/Citas/citas.component';
 import { FormulaComponent } from './demo/pages/Formulas-Medicas/formula.component';
 import { EspecializacionComponent } from './demo/pages/Especializacion/especializacion.component';
 import { LoginComponent } from './demo/pages/login/login.component';
+import { ResetPasswordComponent } from './demo/pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,10 @@ export const routes: Routes = [
     path: 'login',
     data: { title: 'Login' },
     component: LoginComponent,
+  },
+  {
+    path: 'reset-password', 
+    component: ResetPasswordComponent
   },
   {
     path: 'inicio',

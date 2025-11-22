@@ -17,4 +17,11 @@ export class LoginService {
   loginUsuario(loginForm: LoginRq): Observable<LoginRs> {
     return this.backendService.post(this.urlBase, this.endpoint, 'login', loginForm);
   }
+  resetPassword(token: string, newPassword: string, confirmPassword: string): Observable<any> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'reset-password', {
+      token,
+      newPassword,
+      confirmPassword
+    });
+  }
 }
