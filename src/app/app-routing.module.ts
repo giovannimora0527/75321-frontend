@@ -10,8 +10,21 @@ import { PacienteComponent } from './demo/pages/paciente/paciente.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
+import { LoginComponent } from './demo/pages/login/login.component';
 
 export const routes: Routes = [
+    {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },  
+  {
+    path: 'login',
+    data: { title: 'Login' },
+    component: LoginComponent,
+  },
+
+  
   {
     path: '',
     redirectTo: 'inicio',
