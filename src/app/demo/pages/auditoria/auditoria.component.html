@@ -22,10 +22,14 @@
     <div class="card-body">
 
       <div class="row g-3 mb-4">
-        
+
         <div class="col-md-3">
           <label class="form-label fw-semibold">Usuario</label>
-          <input type="text" class="form-control" [(ngModel)]="username" placeholder="Nombre de usuario">
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="username"
+            placeholder="Nombre de usuario">
         </div>
 
         <div class="col-md-3">
@@ -40,12 +44,18 @@
 
         <div class="col-md-3">
           <label class="form-label fw-semibold">Desde</label>
-          <input type="datetime-local" class="form-control" [(ngModel)]="desde">
+          <input
+            type="datetime-local"
+            class="form-control"
+            [(ngModel)]="desde">
         </div>
 
         <div class="col-md-3">
           <label class="form-label fw-semibold">Hasta</label>
-          <input type="datetime-local" class="form-control" [(ngModel)]="hasta">
+          <input
+            type="datetime-local"
+            class="form-control"
+            [(ngModel)]="hasta">
         </div>
 
       </div>
@@ -90,13 +100,48 @@
 
         </table>
       </div>
+
+      <!-- PAGINACIÓN -->
+      <div
+        class="d-flex justify-content-between align-items-center mt-3"
+        *ngIf="auditoriaPage && auditoriaPage.totalElements > 0">
+
+        <div>
+          <small class="text-muted">
+            Mostrando página
+            <strong>{{ page + 1 }}</strong>
+            de
+            <strong>{{ auditoriaPage.totalPages }}</strong>
+            (total registros: {{ auditoriaPage.totalElements }})
+          </small>
+        </div>
+
+        <div class="btn-group">
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            (click)="paginaAnterior()"
+            [disabled]="page === 0">
+            ‹ Anterior
+          </button>
+
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            (click)="paginaSiguiente()"
+            [disabled]="page + 1 >= auditoriaPage.totalPages">
+            Siguiente ›
+          </button>
+        </div>
+      </div>
+
     </div>
 
     <!-- FOOTER -->
-    <div class="card-footer bg-light border-0 py-3" *ngIf="auditoriaList.length > 0">
+    <div
+      class="card-footer bg-light border-0 py-3"
+      *ngIf="auditoriaPage && auditoriaPage.totalElements > 0">
       <div class="row align-items-center">
         <div class="col-md-6">
-          Total de eventos: <strong>{{ auditoriaList.length }}</strong>
+          Total de eventos: <strong>{{ auditoriaPage.totalElements }}</strong>
         </div>
         <div class="col-md-6 text-md-end">
           <small class="text-muted">
