@@ -1,122 +1,194 @@
-<!-- Spinner de carga -->
-<ngx-spinner type="ball-fussion" size="medium" color="#fff">
-  <p>{{ titleSpinner }}</p>
-</ngx-spinner>
+<div class="login-wrapper">
+  <!-- Spinner -->
+  <ngx-spinner 
+    bdColor="rgba(0, 0, 0, 0.8)" 
+    size="large" 
+    color="#fff" 
+    type="ball-scale-multiple"
+    [fullScreen]="true">
+    <p style="color: white">{{ titleSpinner }}</p>
+  </ngx-spinner>
 
-<div class="login-container">
-  <div class="container-fluid">
-    <div class="row justify-content-center align-items-center min-vh-100">
-      <div class="col-md-6 col-lg-4">
-        <div class="card shadow-lg border-0">
-          <div class="card-header bg-primary text-white text-center py-4">
-            <h3 class="mb-0">
-              <i class="fa fa-user-circle"></i>
-              &nbsp;Iniciar Sesión
-            </h3>
-          </div>
-          <div class="card-body p-4">
-            <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-              <!-- Campo de nombre de usuario -->
-              <div class="mb-3">
-                <label for="username" class="form-label">
-                  <i class="fa fa-user"></i>
-                  &nbsp;Nombre de usuario
-                </label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="username"
-                  formControlName="username"
-                  placeholder="Ingrese su nombre de usuario"
-                  [class.is-invalid]="f['username'].invalid && (f['username'].dirty || f['username'].touched)"
-                />
-                <div *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched)" class="invalid-feedback">
-                  <div *ngIf="f['username'].errors?.['required']">
-                    El nombre de usuario es requerido.
-                  </div>
-                  <div *ngIf="f['username'].errors?.['minlength']">
-                    El nombre de usuario debe tener al menos 3 caracteres.
-                  </div>
-                </div>
-              </div>
+  <div class="login-container">
+    <!-- PANEL DE LOGIN NORMAL -->
+    <div class="login-card" *ngIf="!mostrarCambioPassword">
+      <div class="login-header">
+        <div class="logo-container">
+          <i class="pi pi-building" style="font-size: 3rem; color: #667eea;"></i>
+        </div>
+        <h2>🏥 Sistema Clínica UNIMINUTO</h2>
+        <p>Inicia sesión para continuar</p>
+      </div>
 
-              <!-- Campo de contraseña -->
-              <div class="mb-3">
-                <label for="password" class="form-label">
-                  <i class="fa fa-lock"></i>
-                  &nbsp;Contraseña
-                </label>
-                <div class="input-group">
-                  <input
-                    [type]="mostrarPassword ? 'text' : 'password'"
-                    class="form-control"
-                    id="password"
-                    formControlName="password"
-                    placeholder="Ingrese su contraseña"
-                    [class.is-invalid]="f['password'].invalid && (f['password'].dirty || f['password'].touched)"
-                  />
-                  <button 
-                    type="button" 
-                    class="btn btn-outline-secondary" 
-                    (click)="toggleMostrarPassword()" 
-                    tabindex="-1">
-                    <i class="fa" [ngClass]="mostrarPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-                  </button>
-                </div>
-                <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="invalid-feedback d-block">
-                  <div *ngIf="f['password'].errors?.['required']">
-                    La contraseña es requerida.
-                  </div>
-                  <div *ngIf="f['password'].errors?.['minlength']">
-                    La contraseña debe tener al menos 6 caracteres.
-                  </div>
-                </div>
-              </div>
+      <!-- Mensaje de cuenta bloqueada -->
+      <div *ngIf="usuarioBloqueado" class="alert alert-error mb-3">
+        <i class="pi pi-lock"></i>
+        <span>
+          <strong>Cuenta Bloqueada</strong><br>
+          Tu cuenta está bloqueada por <strong>{{ minutosRestantes }} minutos</strong>
+        </span>
+      </div>
 
-              <!-- Recordar sesión -->
-              <div class="mb-3 form-check">
-                <input 
-                  type="checkbox" 
-                  class="form-check-input" 
-                  id="recordarSesion" 
-                  formControlName="recordarSesion"
-                />
-                <label class="form-check-label" for="recordarSesion">
-                  Recordar mi sesión
-                </label>
-              </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <!-- Usuario -->
+        <div class="form-group">
+          <label for="username">
+            <i class="pi pi-user"></i> Usuario
+          </label>
+          <input 
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control"
+            placeholder="Ingrese su usuario"
+            [disabled]="usuarioBloqueado || isLoading"
+            [class.is-invalid]="f['username'].invalid && f['username'].touched" />
+          
+          <small class="error-message" *ngIf="f['username'].invalid && f['username'].touched">
+            <span *ngIf="f['username'].errors?.['required']">El usuario es requerido</span>
+            <span *ngIf="f['username'].errors?.['minlength']">Mínimo 3 caracteres</span>
+          </small>
+        </div>
 
-              <!-- Botón de autenticar -->
-              <div class="d-grid mb-3">
-                <button 
-                  type="submit" 
-                  class="btn btn-primary btn-lg"
-                  [disabled]="loginForm.invalid || isLoading">
-                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                  <i *ngIf="!isLoading" class="fa fa-sign-in-alt me-2"></i>
-                  {{ isLoading ? 'Autenticando...' : 'Autenticar' }}
-                </button>
-              </div>
-
-              <!-- Enlace de contraseña olvidada -->
-              <div class="text-center">
-                <a href="#" class="text-decoration-none" (click)="onForgotPassword($event)">
-                  <i class="fa fa-question-circle"></i>
-                  &nbsp;¿Has olvidado tu contraseña?
-                </a>
-              </div>
-            </form>
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label for="password">
+            <i class="pi pi-lock"></i> Contraseña
+          </label>
+          <div class="password-input-wrapper">
+            <input 
+              [type]="mostrarPassword ? 'text' : 'password'"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              placeholder="Ingrese su contraseña"
+              [disabled]="usuarioBloqueado || isLoading"
+              [class.is-invalid]="f['password'].invalid && f['password'].touched" />
+            
+            <button 
+              type="button"
+              class="toggle-password"
+              (click)="toggleMostrarPassword()"
+              [disabled]="usuarioBloqueado || isLoading">
+              <i [class]="mostrarPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+            </button>
           </div>
           
-          <!-- Footer del card -->
-          <div class="card-footer text-center text-muted py-3">
-            <small>
-              <i class="fa fa-shield-alt"></i>
-              &nbsp;Sistema seguro de autenticación
-            </small>
-          </div>
+          <small class="error-message" *ngIf="f['password'].invalid && f['password'].touched">
+            <span *ngIf="f['password'].errors?.['required']">La contraseña es requerida</span>
+            <span *ngIf="f['password'].errors?.['minlength']">Mínimo 6 caracteres</span>
+          </small>
         </div>
+
+        <!-- Recordar sesión -->
+        <div class="form-group-checkbox">
+          <input 
+            type="checkbox"
+            id="recordarSesion"
+            formControlName="recordarSesion"
+            [disabled]="usuarioBloqueado || isLoading" />
+          <label for="recordarSesion">Recordar mi sesión</label>
+        </div>
+
+        <!-- Alerta de intentos restantes -->
+        <div *ngIf="intentosRestantes < 3 && !usuarioBloqueado" class="alert alert-warning">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>⚠️ Te quedan <strong>{{ intentosRestantes }} intentos</strong></span>
+        </div>
+
+        <!-- Botón de login -->
+        <button 
+          type="submit"
+          class="btn btn-primary btn-block"
+          [disabled]="usuarioBloqueado || isLoading">
+          <i class="pi pi-sign-in"></i>
+          {{ isLoading ? 'Autenticando...' : 'Iniciar Sesión' }}
+        </button>
+
+        <!-- Enlaces de recuperación -->
+        <div class="login-footer">
+          <a href="#" (click)="onSolicitarPasswordTemporal($event)" class="link">
+            <i class="pi pi-key"></i> Solicitar Contraseña Temporal
+          </a>
+          <span class="separator">|</span>
+          <a href="#" (click)="onForgotPassword($event)" class="link">
+            <i class="pi pi-envelope"></i> Recuperar Contraseña
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- NUEVO - PANEL DE CAMBIO DE CONTRASEÑA -->
+    <div class="login-card" *ngIf="mostrarCambioPassword">
+      <div class="login-header">
+        <div class="logo-container">
+          <i class="pi pi-lock" style="font-size: 3rem; color: #f59e0b;"></i>
+        </div>
+        <h2>🔐 Cambio de Contraseña Obligatorio</h2>
+        <p>Por seguridad, debes cambiar tu contraseña temporal</p>
       </div>
+
+      <form [formGroup]="cambiarPasswordForm" (ngSubmit)="onCambiarPassword()">
+        <!-- Nueva contraseña -->
+        <div class="form-group">
+          <label for="nuevaPassword">
+            <i class="pi pi-lock"></i> Nueva Contraseña *
+          </label>
+          <input 
+            type="password"
+            id="nuevaPassword"
+            formControlName="nuevaPassword"
+            class="form-control"
+            placeholder="Ingresa tu nueva contraseña"
+            [class.is-invalid]="fc['nuevaPassword'].invalid && fc['nuevaPassword'].touched" />
+          
+          <small class="help-text">Mínimo 6 caracteres</small>
+          
+          <small class="error-message" *ngIf="fc['nuevaPassword'].invalid && fc['nuevaPassword'].touched">
+            <span *ngIf="fc['nuevaPassword'].errors?.['required']">La contraseña es requerida</span>
+            <span *ngIf="fc['nuevaPassword'].errors?.['minlength']">Mínimo 6 caracteres</span>
+          </small>
+        </div>
+
+        <!-- Confirmar contraseña -->
+        <div class="form-group">
+          <label for="confirmarPassword">
+            <i class="pi pi-lock"></i> Confirmar Contraseña *
+          </label>
+          <input 
+            type="password"
+            id="confirmarPassword"
+            formControlName="confirmarPassword"
+            class="form-control"
+            placeholder="Confirma tu nueva contraseña"
+            [class.is-invalid]="fc['confirmarPassword'].invalid && fc['confirmarPassword'].touched" />
+          
+          <small class="error-message" 
+                 *ngIf="cambiarPasswordForm.hasError('passwordMismatch') && fc['confirmarPassword'].touched">
+            Las contraseñas no coinciden
+          </small>
+        </div>
+
+        <!-- Botones -->
+        <div class="button-group">
+          <button 
+            type="submit"
+            class="btn btn-success"
+            [disabled]="cambiarPasswordForm.invalid || isLoading">
+            <i class="pi pi-check"></i>
+            {{ isLoading ? 'Cambiando...' : 'Cambiar Contraseña' }}
+          </button>
+
+          <button 
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancelarCambioPassword()"
+            [disabled]="isLoading">
+            <i class="pi pi-times"></i>
+            Cancelar
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
