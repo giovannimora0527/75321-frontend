@@ -8,12 +8,23 @@ import { MedicamentoComponent } from './demo/pages/Medicamentos/medicamento.comp
 import { CitaComponent } from './demo/pages/Citas/citas.component';
 import { FormulaComponent } from './demo/pages/Formulas-Medicas/formula.component';
 import { EspecializacionComponent } from './demo/pages/Especializacion/especializacion.component';
+import { LoginComponent } from './demo/pages/login/login.component';
+import { ResetPasswordComponent } from './demo/pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+    {
+    path: 'login',
+    data: { title: 'Login' },
+    component: LoginComponent,
+  },
+  {
+    path: 'reset-password', 
+    component: ResetPasswordComponent
   },
   {
     path: 'inicio',
@@ -29,7 +40,7 @@ export const routes: Routes = [
        { path: 'Especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
     ]
   },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({

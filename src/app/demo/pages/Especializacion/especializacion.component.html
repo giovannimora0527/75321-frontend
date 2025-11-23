@@ -1,152 +1,234 @@
-<div class="container mt-4">
+<ngx-spinner type="pacman" size="medium" color="#F5F2F2">
+  <p style="color:#fff">{{titleSpinner}}</p>
+</ngx-spinner>
+
+<div class="container">
   <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">Gestión de Especializaciones</h4>
-      <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#modalCrear">
-        <i class="bi bi-plus-circle"></i> Nueva Especialización
-      </button>
+    <div class="card-header">
+      <div class="row align-items-center">
+        <div class="col-lg-7">
+          <h3 class="mb-0">
+            <i class="fa fa-graduation-cap"></i>
+            &nbsp;Lista de Especializaciones
+          </h3>
+          <small>Estas son las especializaciones registradas en el sistema.</small>
+        </div>
+        <div class="col-lg-5 text-end">
+          <button type="button" class="btn btn-outline-primary" (click)="abrirModalCrear()">
+            Nueva Especialización
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-hover table-striped">
-          <thead class="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let esp of especializacionList">
-              <td>{{ esp.id }}</td>
-              <td><span class="badge bg-info">{{ esp.codigoEspecializacion }}</span></td>
-              <td>{{ esp.nombre }}</td>
-              <td>{{ esp.descripcion }}</td>
-              <td>
-                <button
-                  class="btn btn-outline-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modalEditar"
-                  (click)="seleccionarParaEditar(esp)"
-                  title="Editar especialización">
-                  <i class="fa fa-edit"></i>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="especializacionList.length === 0">
-              <td colspan="5" class="text-center text-muted">
-                No hay especializaciones disponibles.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    
+    <div class="row">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>ID</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+              <!-- Fila de filtros -->
+              <tr>
+                <th>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm" 
+                    placeholder="Filtrar ID"
+                    [(ngModel)]="filtros.id"
+                    (ngModelChange)="aplicarFiltros()">
+                </th>
+                <th>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm" 
+                    placeholder="Filtrar Código"
+                    [(ngModel)]="filtros.codigoEspecializacion"
+                    (ngModelChange)="aplicarFiltros()">
+                </th>
+                <th>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm" 
+                    placeholder="Filtrar Nombre"
+                    [(ngModel)]="filtros.nombre"
+                    (ngModelChange)="aplicarFiltros()">
+                </th>
+                <th>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm" 
+                    placeholder="Filtrar Descripción"
+                    [(ngModel)]="filtros.descripcion"
+                    (ngModelChange)="aplicarFiltros()">
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let esp of especializacionListFiltrada">
+                <td>{{ esp.id }}</td>
+                <td>{{ esp.codigoEspecializacion }}</td>
+                <td>{{ esp.nombre }}</td>
+                <td>{{ esp.descripcion }}</td>
+                <td>
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-primary"
+                    (click)="seleccionarParaEditar(esp)">
+                    <i class="fa fa-edit"></i> Editar
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="especializacionListFiltrada.length === 0">
+                <td colspan="5" class="text-center">
+                  <span *ngIf="especializacionList.length === 0">No hay especializaciones disponibles.</span>
+                  <span *ngIf="especializacionList.length > 0">No se encontraron especializaciones con los filtros aplicados.</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12">
+            <small class="text-muted">
+              Mostrando {{ especializacionListFiltrada.length }} de {{ especializacionList.length }} especializaciones
+            </small>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Crear -->
+<!-- Modal para CREAR Especialización -->
 <div class="modal fade" id="modalCrear" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalCrearLabel">Nueva Especialización</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="modalCrearLabel">Crear Nueva Especialización</h5>
+        <button type="button" class="btn-close" (click)="closeModal('modalCrear')" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form>
-          <div class="mb-3">
-            <label for="codigo" class="form-label">Código</label>
-            <input
-              type="text"
-              class="form-control"
-              id="codigo"
-              [(ngModel)]="nuevaEspecializacion.codigoEspecializacion"
-              name="codigoEspecializacion"
-              maxlength="10"
-              required>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="codigoCrear" class="form-label">Código de Especialización *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="codigoCrear" 
+                  [(ngModel)]="nuevaEspecializacion.codigoEspecializacion"
+                  name="codigoCrear"
+                  placeholder="Ej: CARD, NEURO, PEDIA">
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre</label>
-            <input
-              type="text"
-              class="form-control"
-              id="nombre"
-              [(ngModel)]="nuevaEspecializacion.nombre"
-              name="nombre"
-              maxlength="100"
-              required>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="nombreCrear" class="form-label">Nombre *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="nombreCrear" 
+                  [(ngModel)]="nuevaEspecializacion.nombre"
+                  name="nombreCrear"
+                  placeholder="Ej: Cardiología">
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea
-              class="form-control"
-              id="descripcion"
-              rows="3"
-              [(ngModel)]="nuevaEspecializacion.descripcion"
-              name="descripcion"></textarea>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="descripcionCrear" class="form-label">Descripción</label>
+                <textarea 
+                  class="form-control" 
+                  id="descripcionCrear" 
+                  [(ngModel)]="nuevaEspecializacion.descripcion"
+                  name="descripcionCrear"
+                  rows="3"
+                  placeholder="Descripción de la especialización"></textarea>
+              </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="crearEspecializacion()">Guardar</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal('modalCrear')">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="crearEspecializacion()">Guardar Especialización</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal Editar -->
+<!-- Modal para EDITAR Especialización -->
 <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="modalEditarLabel">Editar Especialización</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" (click)="closeModal('modalEditar')" aria-label="Close"></button>
       </div>
-      <div class="modal-body" *ngIf="especializacionSeleccionada">
-        <form>
-          <div class="mb-3">
-            <label for="codigoEdit" class="form-label">Código</label>
-            <input
-              type="text"
-              class="form-control"
-              id="codigoEdit"
-              [(ngModel)]="especializacionSeleccionada.codigoEspecializacion"
-              name="codigoEspecializacion"
-              maxlength="10"
-              required>
+      <div class="modal-body">
+        <form *ngIf="especializacionSeleccionada">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="codigoEditar" class="form-label">Código de Especialización *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="codigoEditar" 
+                  [(ngModel)]="especializacionSeleccionada.codigoEspecializacion"
+                  name="codigoEditar"
+                  placeholder="Ej: CARD, NEURO, PEDIA">
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="nombreEdit" class="form-label">Nombre</label>
-            <input
-              type="text"
-              class="form-control"
-              id="nombreEdit"
-              [(ngModel)]="especializacionSeleccionada.nombre"
-              name="nombre"
-              maxlength="100"
-              required>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="nombreEditar" class="form-label">Nombre *</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="nombreEditar" 
+                  [(ngModel)]="especializacionSeleccionada.nombre"
+                  name="nombreEditar"
+                  placeholder="Ej: Cardiología">
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="descripcionEdit" class="form-label">Descripción</label>
-            <textarea
-              class="form-control"
-              id="descripcionEdit"
-              rows="3"
-              [(ngModel)]="especializacionSeleccionada.descripcion"
-              name="descripcion"></textarea>
+          
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3">
+                <label for="descripcionEditar" class="form-label">Descripción</label>
+                <textarea 
+                  class="form-control" 
+                  id="descripcionEditar" 
+                  [(ngModel)]="especializacionSeleccionada.descripcion"
+                  name="descripcionEditar"
+                  rows="3"
+                  placeholder="Descripción de la especialización"></textarea>
+              </div>
+            </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="actualizarEspecializacion()">Actualizar</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal('modalEditar')">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="actualizarEspecializacion()">Actualizar Especialización</button>
       </div>
     </div>
   </div>
