@@ -136,7 +136,7 @@ export class LoginComponent {
             this.minutosRestantes = error.error?.minutosRestantes || 5;
 
             Swal.fire({
-              title: '🚫 Cuenta Bloqueada',
+              title: 'Cuenta Bloqueada',
               html: `Tu cuenta está bloqueada por <strong>${this.minutosRestantes} minutos</strong> debido a múltiples intentos fallidos.<br><br>Por seguridad, intenta nuevamente más tarde.`,
               icon: 'error',
               confirmButtonText: 'Entendido'

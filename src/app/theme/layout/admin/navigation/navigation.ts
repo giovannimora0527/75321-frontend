@@ -78,6 +78,14 @@ export const NavigationItems: NavigationItem[] = [
         icon: "feather icon-file-text",
         classes: "nav-item",
       },
+      {
+        id: "auditoria",
+        title: "Auditoria",
+        type: "item",
+        url: "/inicio/auditoria",
+        icon: "feather icon-user",
+        classes: "nav-item",
+      },
     ],
   }
   /* ---------- Nuevos menus aqui -------------  */

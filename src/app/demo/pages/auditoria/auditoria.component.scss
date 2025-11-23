@@ -1,0 +1,175 @@
+.auditoria-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  
+  h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8rem;
+  }
+  
+  p {
+    margin: 0.5rem 0 0 0;
+    color: #666;
+    font-size: 0.95rem;
+  }
+  
+  .btn-refresh {
+    padding: 0.8rem 1.5rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.3s;
+    
+    &:hover:not(:disabled) {
+      background: #5568d3;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.auditoria-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    background: #f8f9fa;
+    
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      border-bottom: 2px solid #e0e0e0;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  tbody {
+    tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: #f8f9fa;
+      }
+      
+      &.bloqueado {
+        background-color: #ffebee;
+      }
+      
+      &.exitoso {
+        background-color: #e8f5e9;
+      }
+      
+      &.fallido {
+        background-color: #fff3e0;
+      }
+      
+      td {
+        padding: 1rem;
+        color: #333;
+        font-size: 0.9rem;
+        
+        strong {
+          color: #667eea;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-block;
+  
+  &.exitoso {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  &.bloqueado {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  
+  &.fallido {
+    background: #fff3cd;
+    color: #856404;
+  }
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem !important;
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.table-footer {
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  text-align: right;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 0 0 12px 12px;
+  
+  p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    
+    strong {
+      color: #667eea;
+      font-weight: 600;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .auditoria-table {
+    font-size: 0.8rem;
+    
+    thead th,
+    tbody td {
+      padding: 0.6rem;
+    }
+  }
+}

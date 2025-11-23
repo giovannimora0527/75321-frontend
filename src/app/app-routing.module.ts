@@ -9,6 +9,7 @@ import { CitaComponent } from './demo/pages/Citas/citas.component';
 import { FormulaComponent } from './demo/pages/Formulas-Medicas/formula.component';
 import { EspecializacionComponent } from './demo/pages/Especializacion/especializacion.component';
 import { LoginComponent } from './demo/pages/login/login.component';
+import { AuditoriaComponent } from './demo/pages/auditoria/auditoria.component';
 import { ResetPasswordComponent } from './demo/pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
@@ -37,7 +38,8 @@ export const routes: Routes = [
        { path: 'Medicamentos', component: MedicamentoComponent, data: { title: 'Medicamento' }},
        { path: 'Citas', component: CitaComponent, data: { title: 'Cita' }},
        { path: 'Formulas-Medicas', component: FormulaComponent, data: { title: 'Formula' }},
-       { path: 'Especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }}
+       { path: 'Especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},
+       { path: 'auditoria', component: AuditoriaComponent, data: { title: 'Auditoría' }},
     ]
   },
   { path: '**', redirectTo: 'login' }

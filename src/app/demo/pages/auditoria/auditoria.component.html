@@ -1,0 +1,57 @@
+<ngx-spinner 
+  bdColor="rgba(0, 0, 0, 0.8)" 
+  size="large" 
+  color="#fff" 
+  type="ball-scale-multiple"
+  [fullScreen]="true">
+  <p style="color: white">Cargando auditorías...</p>
+</ngx-spinner>
+
+<div class="auditoria-container">
+  <div class="page-header">
+    <h1>🔍 Auditoría del Sistema</h1>
+    <p>Registro de actividades e intentos de inicio de sesión</p>
+    <button class="btn-refresh" (click)="cargarAuditorias()" [disabled]="isLoading">
+      <i class="pi pi-refresh"></i> Actualizar
+    </button>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="auditoria-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha y Hora</th>
+          <th>Usuario</th>
+          <th>Descripción</th>
+          <th>Dirección IP</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let auditoria of auditorias" [ngClass]="getEstadoClass(auditoria)">
+          <td>{{ auditoria.id }}</td>
+          <td>{{ formatearFecha(auditoria.fechaHora) }}</td>
+          <td><strong>{{ auditoria.nombreUsuario }}</strong></td>
+          <td>{{ auditoria.descripcionError }}</td>
+          <td>{{ auditoria.direccionIp || 'N/A' }}</td>
+          <td>
+            <span class="badge" [ngClass]="getEstadoClass(auditoria)">
+              {{ auditoria.bloqueado ? '🚫 Bloqueado' : 
+                 auditoria.descripcionError.includes('exitoso') ? '✅ Exitoso' : '⚠️ Fallido' }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="auditorias.length === 0 && !isLoading">
+          <td colspan="6" class="no-data">
+            <p>No hay registros de auditoría</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-footer" *ngIf="auditorias.length > 0">
+    <p>Total de registros: <strong>{{ auditorias.length }}</strong></p>
+  </div>
+</div>
