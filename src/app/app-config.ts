@@ -17,8 +17,7 @@ export const appConfig: ApplicationConfig = {
           anchorScrolling: 'enabled'
         }),
         withEnabledBlockingInitialNavigation(),
-        withViewTransitions(),
-        withHashLocation()
+        withViewTransitions()
       ),
       provideHttpClient(),     
       provideAnimations(),
@@ -26,7 +25,9 @@ export const appConfig: ApplicationConfig = {
       {
         provide: HTTP_INTERCEPTORS,
         useClass: HeadersInterceptor,
-        multi: true, // Permite múltiples interceptores
+        multi: true,
       }
     ]
-  };
+};
+
+  

@@ -2,67 +2,61 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { UsuarioComponent } from './demo/pages/usuario/usuario.component';
-import { InventarioMedicamentosComponent } from './demo/pages/medicamentos/InventarioMedicamentosComponent'; // ← CORREGIDO
-import { CitasComponent } from './demo/pages/citas/citas.component';
-import { FormulasMedicasComponent } from './demo/pages/formula-medica/formulas-medicas.component';
-import { HistoriasMedicasComponent } from './demo/pages/historia-medica/historias-medicas.component';
-import { GestionEspecializacionesComponent } from './demo/pages/gestion-especializacion/gestion-especializaciones.component';
+import { MedicoComponent } from './demo/pages/medico/medico.component';
+import { PacienteComponent } from './demo/pages/paciente/paciente.component';
+import { CitaComponent } from './demo/pages/cita/cita.component';
+import { EspecializacionComponent } from './demo/pages/especializacion/especializacion.component';
+import { FormulaComponent } from './demo/pages/formula/formula.component';
+import { HistoriaComponent } from './demo/pages/historia/historia.component';
+import { MedicamentoComponent } from './demo/pages/medicamento/medicamento.component';
+import { LoginComponent } from './demo/pages/login/login.component';
+import { ResetPasswordComponent } from './demo/pages/reset-password/reset-password.component';
+import { AuditLogComponent } from './demo/pages/auditoria/audit-log.component';
+
+// GUARDS COMENTADOS TEMPORALMENTE
+// import { authGuard, loginGuard, modulePermissionGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },  
+
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: { title: 'Login' }
   },
+
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+    data: { title: 'Restablecer contraseña' }
+  },
+
   {
     path: 'inicio',
     component: AdminComponent,
-    children: [
-      { 
-        path: '', 
-        redirectTo: 'usuario', 
-        pathMatch: 'full' 
-      },
-      { 
-        path: 'usuario', 
-        component: UsuarioComponent, 
-        data: { title: 'Gestión de Usuarios' } 
-      },
-      { 
-        path: 'medicamentos', 
-        component: InventarioMedicamentosComponent, 
-        data: { title: 'Medicamentos' } 
-      },
-      { 
-        path: 'citas', 
-        component: CitasComponent, 
-        data: { title: 'Citas' } 
-      },
-      { 
-        path: 'formulas', 
-        component: FormulasMedicasComponent, 
-        data: { title: 'Fórmulas Médicas' } 
-      },
-      { 
-        path: 'historias', 
-        component: HistoriasMedicasComponent, 
-        data: { title: 'Historias Médicas' } 
-      },
-      { 
-        path: 'especializaciones', 
-        component: GestionEspecializacionesComponent, 
-        data: { title: 'Especializaciones' } 
-      }
+    data: { title: 'Inicio' },
+    children: [      
+      { path: 'usuario', component: UsuarioComponent, data: { title: 'Usuario' }},
+      { path: 'medico', component: MedicoComponent, data: { title: 'Medico' }},
+      { path: 'paciente', component: PacienteComponent, data: { title: 'Paciente' }},
+      { path: 'cita', component: CitaComponent, data: { title: 'Cita' }},
+      { path: 'medicamento', component: MedicamentoComponent, data: { title: 'Medicamento' }},
+      { path: 'formula-medica', component: FormulaComponent, data: { title: 'Formula' }},
+      { path: 'historia-clinica', component: HistoriaComponent, data: { title: 'Historia' }},
+      { path: 'especializacion', component: EspecializacionComponent, data: { title: 'Especializacion' }},
+      { path: 'audit-log', component: AuditLogComponent, data: { title: 'Logs de Auditoría' }}
     ]
   },
-  { 
-    path: '**', 
-    redirectTo: 'inicio' 
-  }
+
+  { path: '**', redirectTo: 'login' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

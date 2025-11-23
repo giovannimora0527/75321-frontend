@@ -1,0 +1,41 @@
+<div class="filters mb-3">
+  <form [formGroup]="filterForm" (ngSubmit)="onFilter()">
+    <input type="text" formControlName="username" placeholder="Usuario">
+    <input type="text" formControlName="event" placeholder="Evento">
+    <input type="datetime-local" formControlName="from">
+    <input type="datetime-local" formControlName="to">
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+  </form>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Usuario</th>
+      <th>Evento</th>
+      <th>IP</th>
+      <th>Descripción</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let log of logs">
+      <td>{{ log.fecha | date:'short' }}</td>
+      <td>{{ log.usuarioIngresado }}</td>
+      <td>{{ log.evento }}</td>
+      <td>{{ log.ip }}</td>
+      <td>{{ log.descripcion }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<nav *ngIf="totalPages > 1">
+  <ul class="pagination">
+    <li class="page-item" [class.disabled]="page === 0">
+      <button class="page-link" (click)="changePage(page-1)">Anterior</button>
+    </li>
+    <li class="page-item" [class.disabled]="page === totalPages-1">
+      <button class="page-link" (click)="changePage(page+1)">Siguiente</button>
+    </li>
+  </ul>
+</nav>
