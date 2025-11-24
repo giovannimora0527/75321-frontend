@@ -2,20 +2,27 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
-import { medico } from '../models/medico';
+import { Medico } from '../models/medico';
+import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MedicoService {
-  private apiUrl=environment.apiUrl;
-  private endpoint='medico';
+  urlBase = environment.apiUrl;
+  endpoint: string = 'medico';
 
-  constructor(private readonly backendservice:BackendService) { }
+  constructor(private readonly backendService: BackendService) {}
 
-  //Generamos el Metodo llamado al Endpoint
-  //aqui en Onservable llamamos al modelo y al contsructor creamos el metodo
-  listarMedicos():Observable<medico[]>{
-    return this.backendservice.get(this.apiUrl,this.endpoint,'listar');
+  listarMedicos(): Observable<Medico[]> {
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
+  }
+
+  guardarMedico(medico: Medico): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', medico);
+  }
+
+  actualizarMedico(medico: Medico): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', medico);
   }
 }

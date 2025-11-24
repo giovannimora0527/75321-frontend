@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="Auditoría de Seguridad" [options]="false">
+      
+      <form [formGroup]="filterForm" (ngSubmit)="currentPage=0; buscarLogs()" class="row mb-4">
+        <div class="col-md-3">
+          <label>Usuario</label>
+          <input type="text" class="form-control" formControlName="username" placeholder="Buscar username">
+        </div>
+        <div class="col-md-3">
+          <label>Tipo Evento</label>
+          <select class="form-control" formControlName="tipo">
+            <option value="">Todos</option>
+            <option value="LOGIN_EXITOSO">Login Exitoso</option>
+            <option value="LOGIN_FALLIDO">Login Fallido</option>
+            <option value="BLOQUEO_USUARIO">Bloqueo</option>
+            <option value="RECUPERACION_EXITOSA">Recuperación OK</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>Desde</label>
+          <input type="date" class="form-control" formControlName="fechaInicio">
+        </div>
+        <div class="col-md-2">
+          <label>Hasta</label>
+          <input type="date" class="form-control" formControlName="fechaFin">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+           <button type="submit" class="btn btn-primary me-2">Buscar</button>
+           <button type="button" class="btn btn-secondary" (click)="limpiar()">Limpiar</button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Usuario</th>
+              <th>Evento</th>
+              <th>Descripción</th>
+              <th>IP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of logs">
+              <td>{{ log.id }}</td>
+              <td>{{ log.fecha | date:'medium' }}</td>
+              <td>{{ log.username }}</td>
+              <td>
+                <span class="badge" 
+                      [ngClass]="{'bg-success': log.tipoEvento === 'LOGIN_EXITOSO', 
+                                  'bg-danger': log.tipoEvento === 'LOGIN_FALLIDO' || log.tipoEvento === 'BLOQUEO_USUARIO',
+                                  'bg-warning': log.tipoEvento === 'RECUPERACION_EXITOSA'}">
+                  {{ log.tipoEvento }}
+                </span>
+              </td>
+              <td>{{ log.descripcion }}</td>
+              <td>{{ log.ipAddress }}</td>
+            </tr>
+            <tr *ngIf="logs.length === 0">
+              <td colspan="6" class="text-center">No se encontraron registros</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-sm btn-outline-secondary" (click)="cambiarPagina(-1)" [disabled]="currentPage === 0">Anterior</button>
+        <span>Página {{ currentPage + 1 }}</span>
+        <button class="btn btn-sm btn-outline-secondary" (click)="cambiarPagina(1)" [disabled]="logs.length < pageSize">Siguiente</button>
+      </div>
+
+    </app-card>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-spin-clockwise" [fullScreen]="true">
+  <p style="color: white"> Cargando Logs... </p>
+</ngx-spinner>

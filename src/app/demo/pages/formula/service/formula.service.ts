@@ -2,33 +2,27 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
 import { environment } from 'src/environments/environment';
+import { RespuestaRs } from '../../usuario/models/respuesta-rs';
 import { Formula } from '../models/formula';
-import { FormulaRq } from '../models/formularq';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FormulaMedicasService {
-   private apiurl=environment.apiUrl;
-  private endpoint='recetas'
+export class FormulaService {
+  urlBase = environment.apiUrl;
+  endpoint: string = 'receta';
 
-  constructor(private readonly backend:BackendService) { }
+  constructor(private readonly backendService: BackendService) {}
 
-  listarFormulas():Observable<Formula[]>{
-    return this.backend.get<Formula[]>(this.apiurl,this.endpoint,'recientes')
+  listarFormulas(): Observable<Formula[]> {
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
-  //Enpoint Crear pasamos el Rq y rs
-  CrearFormulas(body:FormulaRq):Observable<Formula[]>{
-    return this.backend.post<Formula[]>(this.apiurl,this.endpoint,'crear',body)
+
+  guardarFormula(formula: Formula): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', formula);
   }
-  //ActualizarFormulas
-  ActualizarFormulas(id: number, body: any): Observable<Formula> {
-    return this.backend.post<Formula>(
-      this.apiurl,
-      this.endpoint,
-      `actualizar/${id}`,
-      body
-    );
+
+  actualizarFormula(formula: Formula): Observable<RespuestaRs> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'actualizar', formula);
   }
-  
 }

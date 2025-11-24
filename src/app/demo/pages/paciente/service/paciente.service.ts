@@ -8,14 +8,24 @@ import { Paciente } from '../models/paciente';
   providedIn: 'root'
 })
 export class PacienteService {
-  private apiurl=environment.apiUrl;
-  private endpoint ='pacientes'
+  urlBase = environment.apiUrl;
+  endpoint: string = 'paciente';
 
-  constructor(private readonly backend:BackendService) { }
-  
-  listarPacientes():Observable<Paciente[]>{
-    return this.backend.get(this.apiurl,this.endpoint,'listar')
+  constructor(private readonly backendService: BackendService) {}
+
+  listarPacientes(): Observable<Paciente[]> {
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar');
   }
-  //Implentar Guardar Pacientes
-}
 
+  guardarPaciente(paciente: Paciente): Observable<any> {
+    return this.backendService.post(this.urlBase, this.endpoint, 'guardar', paciente);
+  }
+
+  buscarPacientePorDocumento(documento: string): Observable<Paciente> {
+    return this.backendService.get(
+      this.urlBase, 
+      this.endpoint, 
+      `buscar-paciente-documento?numeroDocumento=${documento}`
+    );
+  }
+}

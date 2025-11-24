@@ -1,11 +1,11 @@
-export class Cita{
+import { Medico } from "../../medico/models/medico";
+import { Paciente } from "../../paciente/models/paciente";
+
+export class Cita {
     id!: number;
-    pacienteId!: number;
-    pacienteDocumento!: string;
-    pacienteNombre!: string;
-    medicoId!: number;
-    medicoNombre!: string;
-    fechaHora!: string;   
+    fechaHora!: string;
     estado!: string;
     motivo!: string;
+    paciente!: Paciente;
+    medico!: Medico;
 }

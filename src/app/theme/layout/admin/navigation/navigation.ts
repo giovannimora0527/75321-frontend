@@ -42,50 +42,58 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Gestión de Pacientes',
         type: 'item',
         url: '/inicio/paciente',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'medicamento',
-        title: 'Gestión de Medicamentos',
+        title: 'Gestión de medicamentos',
         type: 'item',
         url: '/inicio/medicamento',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'cita',
-        title: 'Gestión de Citas',
+        title: 'Gestión de citas',
         type: 'item',
         url: '/inicio/cita',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
-        id: 'historia-clinica',
-        title: 'Gestión de Historias Clínicas',
+        id: 'formula',
+        title: 'Gestión de formulas medicas',
+        type: 'item',
+        url: '/inicio/formula-medica',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'historia',
+        title: 'Gestión de historias clinicas',
         type: 'item',
         url: '/inicio/historia-clinica',
-        icon: 'feather icon-users',
-        classes: 'nav-item'
-      },
-      {
-        id: 'formulas',
-        title: 'Gestión de Fórmulas Médicas',
-        type: 'item',
-        url: '/inicio/formulas',
-        icon: 'feather icon-users',
+        icon: 'feather icon-user-check',
         classes: 'nav-item'
       },
       {
         id: 'especializacion',
-        title: 'Gestión de Especializaciones',
+        title: 'Gestión de especializaciones',
         type: 'item',
-        url: '/inicio/especializaciones',
-        icon: 'feather icon-users',
+        url: '/inicio/especializacion',
+        icon: 'feather icon-user-check',
+        classes: 'nav-item'
+      },
+      {
+        id: 'auditoria',
+        title: 'Auditoría de Seguridad',
+        type: 'item',
+        url: '/inicio/auditoria',     // Esta es la ruta que usaremos
+        icon: 'feather icon-shield',  // Un icono de escudo queda bien
         classes: 'nav-item'
       }
     ]
-  }
+  },
   /* ---------- Nuevos menus aqui -------------  */
 ];

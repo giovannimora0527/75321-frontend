@@ -1,223 +1,168 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Modal } from 'bootstrap';
-import Swal from 'sweetalert2';
-import { Usuario } from './model/usuario';
 import { UsuarioService } from './service/usuario.service';
+import { Usuario } from './models/usuario';
+import { CommonModule } from '@angular/common';
 
-//Importamos lo neceario para los formularios
-import {
-    AbstractControl,
-    FormBuilder,
-    FormControl,
-    FormGroup,
-    FormsModule,
-    ReactiveFormsModule,
-    ValidationErrors,
-    Validators
-} from '@angular/forms';
+// Import library module
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
 
+import Swal from 'sweetalert2';
 // Importa los objetos necesarios de Bootstrap
-import { delay, map, Observable, of } from 'rxjs';
+import Modal from 'bootstrap/js/dist/modal';
 
-//Importamos lo que vamos usar
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'app-usuario',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxSpinnerModule],
   templateUrl: './usuario.component.html',
-  styleUrls: ['./usuario.component.scss']
+  styleUrl: './usuario.component.scss'
 })
 export class UsuarioComponent {
-  //variables para manipular en el modal
-  modalInstance:Modal |null=null;
-  modoFormulario:string='';
-  titleModal:string='';
-  titleBoton='';
-  usuariosList: Usuario[] = [];
-  usuarioSelected:Usuario;
-  fechaActual = new Date();
+  modalInstance: Modal | null = null;
+  modoFormulario: string = '';
+  usuarios: Usuario[] = [];
+  titleModal: string = '';
+  titleBoton: string = '';
+  usuarioSelected: Usuario;
+  titleSpinner: string = "Cargando...";
 
-  //Formulario Reactivo es mas escalable angular escucha los cambios
+  form: FormGroup;
 
-  //Contenedor de los campos del formulario
-  form:FormGroup=new FormGroup({
-
-    //lo que se va inyectar en el formulario
-    //Crear un campo Vacio
-    username:new FormControl(''),
-    password:new FormControl(''),
-    rol:new FormControl(''),
-    fechaCreacion:new FormControl(''),
-    activo:new FormControl(''),
-
-  })
-  //Inyetcamos als dependencias y prepara el estado inicial lo primero que se ejecuta
   constructor(
     private readonly usuarioService: UsuarioService,
-    private readonly formBuilder: FormBuilder
-  ){
-    //Se ejectuan los metodos
+    private readonly formBuilder: FormBuilder,
+    private readonly spinner: NgxSpinnerService
+  ) {    
     this.listarUsuarios();
-    this.inicializarFormulario();
+    this.inicializarFormulario();    
   }
 
-  //Valida los cambios de Manera asincrona
-  inicializarFormulario(){
-    this.form=this.formBuilder.group({
-      username:['',[Validators.required,Validators.minLength(4),Validators.maxLength(12)]],
-      password: ['', [Validators.required, Validators.minLength(8)], [this.passwordAsyncValidator]],
-      rol:['',[Validators.required]],
-      fechaCreacion:['',[Validators.required]],
-      activo:['',[Validators.required]],
-  });
-}
-//foma de acceder a los controles en el Html
-get f():{[key:string]:AbstractControl}{
-  return this.form.controls;
-}
-
-//Validamos de manera asicronica la contraseña
-passwordAsyncValidator(control: AbstractControl): Observable<ValidationErrors | null> {
-  const contrasenasProhibidas = ['12345678', 'password', 'admin'];
-
-  return of(contrasenasProhibidas.includes(control.value)).pipe(
-    delay(800), // simulamos llamada a servidor
-    map((invalida) => (invalida ? { passwordProhibida: true } : null))
-  );
-}
-
-
-  otroMetodo() {
-    console.log('Usuarios cargados: ', this.usuariosList);
-  }
-
-  //Tiene que existir el metodo en el servicio para luego implentar logica de Negocio
-  listarUsuarios() {
-    console.log('Entro a cargar usuarios');
-    this.usuarioService.listarTodos().subscribe({
-      next: (usuarios: Usuario[]) => {
-        this.usuariosList = usuarios;
-        this.otroMetodo();
-      },
-      error: (err) => console.error('Error al cargar usuarios', err),
+  inicializarFormulario() {
+    this.form = this.formBuilder.group({
+      username: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      email: ['', [Validators.required, Validators.email]],
+      rol: ['', [Validators.required]],
+      activo: [true]
     });
   }
-  //Este metodo es para abrir el modal
-  claseModal(){
-    if(this.modalInstance){
-      this.modalInstance.hide();
-    }
+
+
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
   }
 
-  //Preparar los datos para el modal
+  listarUsuarios() {
+    this.spinner.show();
+    this.usuarioService.listarUsuarios().subscribe({
+      next: (data) => {
+        this.usuarios = data;
+        this.spinner.hide();
+      },
+      error: (error) => {
+        console.error('Error al listar usuarios', error);
+        this.spinner.hide();
+      }
+    });
+  }
+
+  closeModal() {
+    if (this.modalInstance) {
+      this.modalInstance.hide();
+    }
+    this.limpiarFormulario();
+  }
+
   openModal(modo: string) {
     this.titleModal = modo === 'C' ? 'Crear Usuario' : 'Editar Usuario';
     this.titleBoton = modo === 'C' ? 'Guardar Usuario' : 'Actualizar Usuario';
     this.modoFormulario = modo;
-    const modalElement = document.getElementById('modalUsuario');
+    const modalElement = document.getElementById('modalCrearUsuario');
     if (modalElement) {
-      //Verifica si ya existe una instancia del modal
+      // Verificar si ya existe una instancia del modal
       this.modalInstance ??= new Modal(modalElement);
       this.modalInstance.show();
     }
   }
 
-  //metodo para abrir el modal
   abrirNuevoUsuario() {
-    this.usuarioSelected = new Usuario();
-    //Cargamos los datos del usuario
-    //Dejar el formulario en blanco
-    this.limpiarFormulario();
-    
-    //Establecer fecha actual para nuevo usuario
-    this.establecerFechaActual();
-
-    //dejar el formulario en blanco
+    this.usuarioSelected = null;
     this.openModal('C');
   }
 
-  //Metodo para limpiar el formulario
-  limpiarFormulario(){
-    this.form.reset();
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
-  }
-
-  //Metodo para establecer fecha actual al crear nuevo usuario
-  establecerFechaActual(){
-    const fechaActual = new Date();
-    const fechaFormateada = fechaActual.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-    this.form.get('fechaCreacion').setValue(fechaFormateada);
-  }
-
   abrirEditarUsuario(usuario: Usuario) {
-    //limpiamos el formulario de primeras
-    this.limpiarFormulario();
     this.usuarioSelected = usuario;
     this.openModal('E');
   }
 
-  //Cerrar el modal
-  closeModal() {
-    if (this.modalInstance) {
-      this.modalInstance.hide();
-    }
-  }
-
-  // Espera a que el modal termine de ocultarse (transición completa)
-  private waitForModalHidden(modalElement: HTMLElement): Promise<void> {
-    return new Promise((resolve) => {
-      // Garantiza que resolvemos incluso si no se dispara el evento por alguna razón
-      const fallbackTimeout = setTimeout(resolve, 600);
-
-      const handler = () => {
-        clearTimeout(fallbackTimeout);
-        modalElement.removeEventListener('hidden.bs.modal', handler as any);
-        resolve();
-      };
-      // Bootstrap emite 'hidden.bs.modal' cuando termina la animación de cierre
-      modalElement.addEventListener('hidden.bs.modal', handler as any, { once: true });
-    });
-  }
-
-  //Logica de guardar los Usuarios llamando al service a la api del backend
+  /**
+   * Funcion que permite guardar/actualizar un usuario.
+   */
   guardarUsuario() {
+    this.titleSpinner = this.modoFormulario === 'C' ? "Creando usuario..." : "Actualizando usuario...";
+    this.spinner.show();   
+    if (this.modoFormulario === 'C') {
+      this.form.get('activo')?.setValue(true);
+    }
     if (this.form.invalid) {
-      Swal.fire('Error', 'Por favor complete todos los campos requeridos', 'error');
+      // Manejar el formulario inválido
+      this.spinner.hide();
+      Swal.fire('Error', 'Por favor, corrige los errores en el formulario.', 'error');
       return;
     }
 
-    this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
-      next: (data) => {
-        console.log(data);
-        // Cerrar el modal primero y esperar a que termine la animación para evitar que la alerta quede debajo
-        const modalElement = document.getElementById('modalUsuario');
-        this.closeModal();
-        if (modalElement) {
-          this.waitForModalHidden(modalElement).then(() => {
+    if (this.modoFormulario === 'C') {
+      // Modo Creación
+      this.usuarioService.guardarUsuario(this.form.getRawValue()).subscribe({
+        next: (data) => {          
+          if (data.status === 200) {
+            this.spinner.hide();
             Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
             this.listarUsuarios();
-          });
-        } else {
-          Swal.fire('Éxito', data.mensaje, 'success');
-          this.listarUsuarios();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();        
+          Swal.fire('Error', error.error.message, 'error');
         }
-      },
-      error: (error) => {
-        console.error('Error al guardar usuario: ', error);
-        // Cerrar el modal primero y esperar para mostrar la alerta por encima del backdrop
-        const modalElement = document.getElementById('modalUsuario');
-        this.closeModal();
-        if (modalElement) {
-          this.waitForModalHidden(modalElement).then(() => {
-            Swal.fire('Error', error?.error?.message ?? 'Ocurrió un error al guardar', 'error');
-          });
-        } else {
-          Swal.fire('Error', error?.error?.message ?? 'Ocurrió un error al guardar', 'error');
+      });
+    } else {
+      // Modo Edición
+      const usuarioActualizado: Usuario = this.form.getRawValue();
+      usuarioActualizado.id = this.usuarioSelected.id;
+      this.usuarioService.actualizarUsuario(usuarioActualizado).subscribe({
+        next: (data) => {       
+          if (data.status === 200) {
+            this.spinner.hide();
+            Swal.fire('Éxito', data.mensaje, 'success');
+            this.closeModal();
+            this.listarUsuarios();
+          } else {
+            this.spinner.hide();
+            Swal.fire('Error', data.mensaje, 'error');
+          }
+        },
+        error: (error) => {
+          this.spinner.hide();          
+          Swal.fire('Error', error.error.message, 'error');
         }
-      }
-      //Falta actualizar Usuarios tanto Logica Backend Y frontend
-    });
+      });
+    }
   }
 
+  limpiarFormulario() {
+    this.form.reset({
+      username: this.usuarioSelected ? this.usuarioSelected.username : '',
+      email: this.usuarioSelected ? this.usuarioSelected.email : '',
+      rol: this.usuarioSelected ? this.usuarioSelected.rol : '',
+      activo: this.usuarioSelected ? this.usuarioSelected.activo : false
+    });
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+  }
 }

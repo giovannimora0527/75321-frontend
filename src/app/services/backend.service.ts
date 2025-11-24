@@ -165,26 +165,4 @@ export class BackendService {
       withCredentials: true,
     });
   }
-  /**
- * Método genérico DELETE
- * @param urlApi URL base (por ejemplo http://localhost:8080)
- * @param endpoint Recurso principal (paciente, usuario, etc)
- * @param service Ruta o ID del recurso a eliminar
- */
-delete<T>(
-  urlApi: string,
-  endpoint: string,
-  service: string
-): Observable<T> {
-  const tokenRecuperado = localStorage.getItem('token') || '';
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    Authorization: tokenRecuperado ? `Bearer ${tokenRecuperado}` : '',
-  });
-  return this.http.delete<T>(`${urlApi}/${endpoint}/${service}`, {
-    headers: headers,
-    withCredentials: true,
-  });
-}
-
 }

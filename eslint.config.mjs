@@ -22,9 +22,12 @@ export default [{
     ...config,
     files: ["**/*.ts"],
 })), {
-    files: ["**/*.ts"],
+files: ["**/*.ts"],
 
     rules: {
+        // AGREGA ESTA LÍNEA AL PRINCIPIO DE RULES:
+        "@typescript-eslint/no-explicit-any": "off", 
+
         "@angular-eslint/directive-selector": ["error", {
             type: "attribute",
             prefix: "app",

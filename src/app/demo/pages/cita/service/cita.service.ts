@@ -1,3 +1,4 @@
+import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BackendService } from 'src/app/services/backend.service';
@@ -7,16 +8,14 @@ import { Cita } from '../models/cita';
 @Injectable({
   providedIn: 'root'
 })
-export class CitasService {
-  private apiurl=environment.apiUrl;
-  private endpoint='citas'
+export class CitaService {
+  urlBase = environment.apiUrl;
+  endpoint: string = 'cita';
 
-  constructor(private readonly backend:BackendService) { }
+  constructor(private readonly backendService: BackendService) {}
 
-  //Listar Por citas mas recientes
-  listarCitas():Observable<Cita[]>{
-    return this.backend.get<Cita[]>(this.apiurl,this.endpoint,'recientes');
+  buscarCitaPorPacienteId(pacienteId: number): Observable<Cita[]> {
+    const params: HttpParams = new HttpParams().set('pacienteIds', pacienteId.toString());
+    return this.backendService.get(this.urlBase, this.endpoint, 'listar-citas-paciente', params);
   }
-
-
 }
